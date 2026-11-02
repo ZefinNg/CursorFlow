@@ -24,6 +24,18 @@ Rectangle {
     border.color: theme.border
     border.width: 1
 
+    // 千分位分组：QML V4 引擎对 \B lookahead 正则支持异常（出现 "3,,835"），
+    // 改用纯字符串每 3 位分组，各引擎行为一致
+    function groupThousands(n) {
+        var s = String(n)
+        var out = ""
+        while (s.length > 3) {
+            out = "," + s.slice(-3) + out
+            s = s.slice(0, -3)
+        }
+        return s + out
+    }
+
     function format(v) {
         if (root.mode === "distance") {
             return v < 1000 ? Math.round(v) + " m"
@@ -37,7 +49,7 @@ Rectangle {
             const m = Math.round(v % 60)
             return h + " " + qsTr("小时") + (m > 0 ? " " + m + " " + qsTr("分") : "")
         }
-        return Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        return groupThousands(Math.round(v))
     }
 
     Column {
