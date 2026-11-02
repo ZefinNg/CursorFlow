@@ -101,7 +101,7 @@
     </message>
     <message>
         <source>填写显示器对角线尺寸与分辨率，让“鼠标距离”按真实物理米数换算；不设置则按 96 PPI 估算。</source>
-        <translation>Enter your display's diagonal size and resolution so "mouse distance" reflects real-world meters; otherwise a 96 PPI estimate is used.</translation>
+        <translation>Enter your display&apos;s diagonal size and resolution so &quot;mouse distance&quot; reflects real-world meters; otherwise a 96 PPI estimate is used.</translation>
     </message>
     <message>
         <source>对角线尺寸（英寸）</source>
@@ -359,6 +359,22 @@
     <message>
         <source>项目主页：&lt;a href=&quot;https://github.com/ZefinNg/CursorFlow&quot;&gt;github.com/ZefinNg/CursorFlow&lt;/a&gt;</source>
         <translation>Project home: &lt;a href=&quot;https://github.com/ZefinNg/CursorFlow&quot;&gt;github.com/ZefinNg/CursorFlow&lt;/a&gt;</translation>
+    </message>
+    <message>
+        <source>关闭窗口时</source>
+        <translation>When closing window</translation>
+    </message>
+    <message>
+        <source>每次询问</source>
+        <translation>Ask every time</translation>
+    </message>
+    <message>
+        <source>最小化到托盘</source>
+        <translation>Minimize to tray</translation>
+    </message>
+    <message>
+        <source>退出程序</source>
+        <translation>Quit app</translation>
     </message>
 </context>
 <context>

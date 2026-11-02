@@ -18,6 +18,7 @@ const QLatin1String kAnimations("display/animationsEnabled");
 const QLatin1String kCalibrationInch("calibration/diagonalInch");
 const QLatin1String kCalibrationPpi("calibration/ppi");
 const QLatin1String kOnboarded("general/onboarded");
+const QLatin1String kCloseAction("general/closeAction");
 
 // 自启注册键（04 号文档 §2.3：Win 注册表 Run；macOS/Linux 机制在跨平台任务接入）
 void applyPlatformAutostart(bool enabled)
@@ -54,6 +55,7 @@ AppSettings::AppSettings(DataManager* dataManager, QObject* parent)
     calibrationDiagonalInch_ = settings.value(kCalibrationInch, 0.0).toDouble();
     calibrationPpi_ = settings.value(kCalibrationPpi, 96).toInt();
     onboarded_ = settings.value(kOnboarded, false).toBool();
+    closeAction_ = settings.value(kCloseAction, 0).toInt();
 }
 
 void AppSettings::setAutostart(bool enabled)
@@ -185,6 +187,21 @@ QString AppSettings::buildInfo() const
     return QStringLiteral("%1 · %2")
         .arg(QString::fromLatin1(CURSORFLOW_BUILD_DATE),
              QString::fromLatin1(CURSORFLOW_BUILD_COMPILER));
+}
+
+void AppSettings::setCloseAction(int action)
+{
+    // 仅接受合法值（0 每次询问 / 1 最小化 / 2 退出，任务 6.4）
+    if (action != 0 && action != 1 && action != 2) {
+        action = 0;
+    }
+    if (closeAction_ == action) {
+        return;
+    }
+    closeAction_ = action;
+    QSettings settings;
+    settings.setValue(kCloseAction, action);
+    emit closeActionChanged(action);
 }
 
 bool AppSettings::systemPrefersDark() const

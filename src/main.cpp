@@ -19,12 +19,15 @@
 #endif
 
 #include <QAction>
+#include <QAbstractButton>
 #include <QApplication>
+#include <QCheckBox>
 #include <QDateTime>
 #include <QMenu>
 #include <QMessageBox>
 #include <QMetaObject>
 #include <QPainter>
+#include <QPushButton>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QLocale>
@@ -58,6 +61,24 @@ QPixmap makeTrayIconPixmap(bool paused)
 }
 
 } // namespace
+
+// 关闭窗口行为（任务 6.4，M4）：拦截 QQuickWindow 的 Close 事件，
+// 按 closeAction（0 询问 / 1 最小化 / 2 退出）处理；询问可"记住选择"。
+class CloseGuard : public QObject
+{
+public:
+    using QObject::QObject;
+
+    bool bypass = false;                    // 二次真正关闭时绕过拦截
+    std::function<bool()> handler;          // 返回 true = 事件已消化
+    bool eventFilter(QObject* obj, QEvent* ev) override
+    {
+        if (ev->type() == QEvent::Close && !bypass && handler && handler()) {
+            return true;
+        }
+        return QObject::eventFilter(obj, ev);
+    }
+};
 
 int main(int argc, char* argv[])
 {
@@ -214,6 +235,47 @@ int main(int argc, char* argv[])
     qInfo() << "QML 主窗口加载成功";
     QObject* window = engine.rootObjects().first();
 
+    // ---- 关闭窗口询问（任务 6.4；PRD 3.4）：退出 / 最小化到托盘，可记住 ----
+    auto* closeGuard = new CloseGuard(window);
+    closeGuard->handler = [&appSettings, window, &app, closeGuard]() -> bool {
+        const int action = appSettings.closeAction();
+        if (action == 1) { // 已记住"最小化窗口"
+            QMetaObject::invokeMethod(window, "hide");
+            return true;
+        }
+        if (action == 2) { // 已记住"退出程序"
+            closeGuard->bypass = true;
+            QMetaObject::invokeMethod(window, "close");
+            QCoreApplication::quit();
+            return true;
+        }
+        QMessageBox box;
+        box.setWindowTitle(QObject::tr("关闭 CursorFlow"));
+        box.setText(QObject::tr("要退出程序还是最小化到系统托盘？"));
+        box.setStandardButtons(QMessageBox::NoButton);
+        auto* quitBtn = box.addButton(QObject::tr("退出程序"), QMessageBox::YesRole);
+        auto* minBtn = box.addButton(QObject::tr("最小化窗口"), QMessageBox::NoRole);
+        box.addButton(QObject::tr("取消"), QMessageBox::RejectRole);
+        auto* remember = new QCheckBox(QObject::tr("记住我的选择，不再询问"));
+        box.setCheckBox(remember);
+        box.exec();
+        if (box.clickedButton() == quitBtn) {
+            if (remember->isChecked()) {
+                appSettings.setCloseAction(2);
+            }
+            closeGuard->bypass = true;
+            QMetaObject::invokeMethod(window, "close");
+            QCoreApplication::quit();
+        } else if (box.clickedButton() == minBtn) {
+            if (remember->isChecked()) {
+                appSettings.setCloseAction(1);
+            }
+            QMetaObject::invokeMethod(window, "hide");
+        }
+        return true; // 询问弹窗期间与"取消"均不关闭窗口
+    };
+    window->installEventFilter(closeGuard);
+
     captureThread.start();
     if (privacy.accepted()) {
         startCapture();
@@ -273,6 +335,17 @@ int main(int argc, char* argv[])
 
     tray.setContextMenu(&trayMenu);
     tray.show();
+
+    // 托盘左键单击显示主窗口（任务 6.4；PRD 5.2 托盘交互）
+    QObject::connect(
+        &tray, &QSystemTrayIcon::activated, window,
+        [window](QSystemTrayIcon::ActivationReason reason) {
+            if (reason == QSystemTrayIcon::Trigger) {
+                QMetaObject::invokeMethod(window, "showNormal");
+                QMetaObject::invokeMethod(window, "raise");
+                QMetaObject::invokeMethod(window, "activateWindow");
+            }
+        });
 
     // 导出完成托盘气泡（03 号文档 §6）
     QObject::connect(&exporterController, &ExporterController::exportFinished, &tray,

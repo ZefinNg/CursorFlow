@@ -16,6 +16,7 @@ private slots:
     void settersPersistAndNotify();
     void calibration();       // 4.4：英寸+分辨率→PPI，持久化与无效输入重置
     void onboardingAndVersion(); // 6.2/6.1（M4）：首启标记持久化 + 版本信息只读
+    void closeAction();          // 6.4（M4）：关闭行为 0/1/2 持久化与非法值钳制
     void autostartRegistry(); // 放最后：Windows 会写真实 HKCU Run 键，测试末尾恢复
 
 private:
@@ -134,6 +135,29 @@ void TestAppSettings::onboardingAndVersion()
     QVERIFY(!settings.qtVersion().isEmpty());
     QVERIFY(!settings.buildInfo().isEmpty());
     QCOMPARE(settings.appVersion(), QStringLiteral("0.1.0"));
+}
+
+void TestAppSettings::closeAction()
+{
+    QSettings().clear();
+    AppSettings settings(nullptr);
+    QSignalSpy spy(&settings, &AppSettings::closeActionChanged);
+
+    // 默认：每次询问（任务 6.4）
+    QCOMPARE(settings.closeAction(), 0);
+
+    settings.setCloseAction(1);
+    QCOMPARE(settings.closeAction(), 1);
+    settings.setCloseAction(2);
+    QCOMPARE(settings.closeAction(), 2);
+
+    // 新实例恢复（模拟重启）
+    AppSettings restored(nullptr);
+    QCOMPARE(restored.closeAction(), 2);
+
+    // 非法值钳制回"每次询问"
+    settings.setCloseAction(99);
+    QCOMPARE(settings.closeAction(), 0);
 }
 
 void TestAppSettings::autostartRegistry()

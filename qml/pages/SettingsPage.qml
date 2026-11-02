@@ -245,6 +245,32 @@ Item {
                             onToggled: settings.animationsEnabled = checked
                         }
                     }
+
+                    Rectangle {
+                        width: parent.width
+                        height: 1
+                        color: theme.border
+                    }
+
+                    // 关闭窗口行为（任务 6.4）：0 每次询问 / 1 最小化到托盘 / 2 退出程序
+                    Row {
+                        width: parent.width
+                        height: 52
+                        Label {
+                            text: qsTr("关闭窗口时")
+                            color: theme.text
+                            font.pixelSize: 13
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                        ComboBox {
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.right: parent.right
+                            width: 140
+                            model: [qsTr("每次询问"), qsTr("最小化到托盘"), qsTr("退出程序")]
+                            currentIndex: settings.closeAction
+                            onActivated: settings.closeAction = currentIndex
+                        }
+                    }
                 }
             }
 

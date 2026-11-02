@@ -360,6 +360,22 @@
         <source>项目主页：&lt;a href=&quot;https://github.com/ZefinNg/CursorFlow&quot;&gt;github.com/ZefinNg/CursorFlow&lt;/a&gt;</source>
         <translation>项目主页：&lt;a href=&quot;https://github.com/ZefinNg/CursorFlow&quot;&gt;github.com/ZefinNg/CursorFlow&lt;/a&gt;</translation>
     </message>
+    <message>
+        <source>关闭窗口时</source>
+        <translation>关闭窗口时</translation>
+    </message>
+    <message>
+        <source>每次询问</source>
+        <translation>每次询问</translation>
+    </message>
+    <message>
+        <source>最小化到托盘</source>
+        <translation>最小化到托盘</translation>
+    </message>
+    <message>
+        <source>退出程序</source>
+        <translation>退出程序</translation>
+    </message>
 </context>
 <context>
     <name>Sidebar</name>

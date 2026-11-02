@@ -25,6 +25,8 @@ class AppSettings : public QObject
     Q_PROPERTY(int calibrationPpi READ calibrationPpi NOTIFY calibrationChanged)
     // 首启引导完成标记（任务 6.2，M4）：true 后不再弹出 OnboardingDialog
     Q_PROPERTY(bool onboarded READ onboarded WRITE setOnboarded NOTIFY onboardedChanged)
+    // 关闭窗口行为（任务 6.4，M4）：0=每次询问（默认）1=最小化到托盘 2=退出程序
+    Q_PROPERTY(int closeAction READ closeAction WRITE setCloseAction NOTIFY closeActionChanged)
     // 软件信息（任务 6.1，M4）：编译期注入，运行期不变（CONSTANT）
     Q_PROPERTY(QString appVersion READ appVersion CONSTANT)
     Q_PROPERTY(QString qtVersion READ qtVersion CONSTANT)
@@ -67,6 +69,9 @@ public:
     bool onboarded() const { return onboarded_; }
     void setOnboarded(bool done);
 
+    int closeAction() const { return closeAction_; }
+    void setCloseAction(int action);
+
     // 软件信息（任务 6.1，M4）：版本与 project(VERSION)/安装包同源（version.h）
     QString appVersion() const;
     QString qtVersion() const;
@@ -81,6 +86,7 @@ signals:
     void animationsEnabledChanged(bool enabled);
     void calibrationChanged();
     void onboardedChanged(bool done);
+    void closeActionChanged(int action);
 
 private:
     DataManager* dataManager_;
@@ -94,4 +100,5 @@ private:
     double calibrationDiagonalInch_ = 0.0;
     int calibrationPpi_ = 96; // 未校准默认 96 DPI 估算（06 号文档 §6 风险应对）
     bool onboarded_ = false;
+    int closeAction_ = 0; // 0=每次询问（6.4）
 };
