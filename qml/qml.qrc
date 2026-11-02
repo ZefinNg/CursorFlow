@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/qml">
         <file>Main.qml</file>
+        <file alias="icons/CursorFlow.png">../assets/image/CursorFlow_256.png</file>
         <file>components/PrivacyDialog.qml</file>
         <file>components/Sidebar.qml</file>
         <file>components/StatCard.qml</file>

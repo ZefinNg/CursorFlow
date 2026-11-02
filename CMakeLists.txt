@@ -103,6 +103,11 @@ add_executable(CursorFlow WIN32 MACOSX_BUNDLE
     qml/qml.qrc
 )
 
+# Windows 可执行文件图标（M4 增补）：资源管理器/任务栏图标
+if(WIN32)
+    target_sources(CursorFlow PRIVATE assets/image/app_icon.rc)
+endif()
+
 target_link_libraries(CursorFlow PRIVATE
     cursorflow_core
     Qt5::Quick

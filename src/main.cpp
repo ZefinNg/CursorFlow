@@ -18,6 +18,8 @@
 #include "capture/platform/X11InputHook.h"
 #endif
 
+#include <QGuiApplication>
+#include <QIcon>
 #include <QAction>
 #include <QAbstractButton>
 #include <QApplication>
@@ -44,20 +46,23 @@
 
 namespace {
 
-// 托盘图标：暂停态整体置灰（04 号文档 §3 图标状态）；正式图标随任务 3.2 更新
+// 托盘图标（04 号文档 §3）：统一采用 assets/image 素材（任务 6.4 图标接入），
+// 正常态原图；暂停态灰度化区分（保留 alpha，避免出现底色方块）。
 QPixmap makeTrayIconPixmap(bool paused)
 {
-    QPixmap pixmap(32, 32);
-    pixmap.fill(Qt::transparent);
-
-    QPainter painter(&pixmap);
-    painter.setRenderHint(QPainter::Antialiasing);
-    painter.setPen(Qt::NoPen);
-    painter.setBrush(paused ? QColor(0x6B, 0x70, 0x80) : QColor(0x6C, 0x7B, 0xFF));
-    painter.drawEllipse(2, 2, 28, 28);
-    painter.setBrush(paused ? QColor(0x9A, 0xA0, 0xB5) : QColor(0x3D, 0xD6, 0xC3));
-    painter.drawEllipse(11, 11, 10, 10);
-    return pixmap;
+    const QPixmap icon = QIcon(QStringLiteral(":/qml/icons/CursorFlow.png")).pixmap(32, 32);
+    if (!paused) {
+        return icon;
+    }
+    QImage img = icon.toImage().convertToFormat(QImage::Format_ARGB32);
+    for (int y = 0; y < img.height(); ++y) {
+        for (int x = 0; x < img.width(); ++x) {
+            const QRgb c = img.pixel(x, y);
+            const int gray = qGray(c);
+            img.setPixel(x, y, qRgba(gray, gray, gray, qAlpha(c)));
+        }
+    }
+    return QPixmap::fromImage(img);
 }
 
 } // namespace
@@ -96,6 +101,9 @@ int main(int argc, char* argv[])
     qInfo() << "应用启动 · 版本" << CURSORFLOW_VERSION << "· 构建" << CURSORFLOW_BUILD_DATE
             << CURSORFLOW_BUILD_COMPILER << "· Qt" << qVersion()
             << "· 平台" << QGuiApplication::platformName();
+
+    // 应用图标（M4 增补）：窗口/任务栏统一使用 assets/image 素材
+    app.setWindowIcon(QIcon(QStringLiteral(":/qml/icons/CursorFlow.png")));
 
     QQuickStyle::setStyle(QStringLiteral("Fusion"));
 
