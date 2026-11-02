@@ -1,0 +1,15 @@
+# 构建产物
+build*/
+out/
+compile_commands.json
+
+# IDE
+CMakeLists.txt.user
+*.autosave
+.vs/
+.vscode/
+.idea/
+
+# 系统
+.DS_Store
+Thumbs.db

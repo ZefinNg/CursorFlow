@@ -1,0 +1,20 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/qml">
+        <file>Main.qml</file>
+        <file>components/PrivacyDialog.qml</file>
+        <file>components/Sidebar.qml</file>
+        <file>components/StatCard.qml</file>
+        <file>components/TrendChart.qml</file>
+        <file>components/HeatmapGrid.qml</file>
+        <file>components/ParticleTrail.qml</file>
+        <file>pages/DashboardPage.qml</file>
+        <file>pages/HistoryPage.qml</file>
+        <file>pages/SettingsPage.qml</file>
+        <file>icons/overview.svg</file>
+        <file>icons/history.svg</file>
+        <file>icons/settings.svg</file>
+        <file alias="i18n/CursorFlow_zh_CN.qm">i18n/CursorFlow_zh_CN.qm</file>
+        <file alias="i18n/CursorFlow_en.qm">i18n/CursorFlow_en.qm</file>
+    </qresource>
+</RCC>

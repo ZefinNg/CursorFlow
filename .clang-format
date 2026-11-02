@@ -1,0 +1,15 @@
+---
+Language: Cpp
+BasedOnStyle: LLVM
+Standard: c++17
+IndentWidth: 4
+ColumnLimit: 100
+PointerAlignment: Right
+BreakBeforeBraces: Stroustrup
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+AlignAfterOpenBracket: Align
+SpaceBeforeParens: ControlStatements
+FixNamespaceComments: true
+SortIncludes: CaseSensitive
+IncludeBlocks: Preserve

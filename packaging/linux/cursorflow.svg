@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- CursorFlow 应用图标：蓝紫圆底 + 青绿轨迹点（04 号文档 §4 主题色） -->
+  <circle cx="32" cy="32" r="30" fill="#6C7BFF"/>
+  <path d="M14 44 C 22 40, 26 30, 34 26 S 46 22, 50 18" fill="none"
+        stroke="#3DD6C3" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="50" cy="18" r="5" fill="#3DD6C3"/>
+</svg>
