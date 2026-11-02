@@ -70,8 +70,11 @@ void messageHandler(QtMsgType type, const QMessageLogContext& context, const QSt
         g_file->write(line.toUtf8());
         g_file->flush(); // 每行即刷：崩溃/断电场景不丢尾部日志
     }
-    // 同步透传 stderr，开发期控制台可见（GUI 程序发布后无害）
-    std::fprintf(stderr, "%s", qUtf8Printable(line));
+    // 同步透传 stderr，开发期控制台可见（GUI 程序发布后无害）。
+    // 用本地编码（中文 Windows = GBK）与 Qt Creator 输出窗格一致，避免 UTF-8 乱码；
+    // 文件日志仍为 UTF-8（上方 write）。
+    const QByteArray localLine = line.toLocal8Bit();
+    std::fwrite(localLine.constData(), 1, static_cast<size_t>(localLine.size()), stderr);
     if (type == QtFatalMsg) {
         std::fflush(stderr);
     }
