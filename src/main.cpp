@@ -1,5 +1,6 @@
 #include "app/AppSettings.h"
 #include "app/HistoryController.h"
+#include "app/Logger.h"
 #include "app/PrivacyGate.h"
 #include "app/StatsController.h"
 #include "app/Theme.h"
@@ -30,6 +31,7 @@
 #include <QPalette>
 #include <QQuickStyle>
 #include <QScreen>
+#include <QStandardPaths>
 #include <QSystemTrayIcon>
 #include <QThread>
 #include <QTimer>
@@ -68,6 +70,12 @@ int main(int argc, char* argv[])
     // 版本号与 project(VERSION)/安装包同源（任务 6.1，M4；version.h 由 CMake 生成）
     QApplication::setApplicationVersion(QString::fromLatin1(CURSORFLOW_VERSION));
 
+    // 本地文件日志（M4 增补 6.3）：此后所有 Qt 消息落盘，供问题回溯
+    Logger::install();
+    qInfo() << "应用启动 · 版本" << CURSORFLOW_VERSION << "· 构建" << CURSORFLOW_BUILD_DATE
+            << CURSORFLOW_BUILD_COMPILER << "· Qt" << qVersion()
+            << "· 平台" << QGuiApplication::platformName();
+
     QQuickStyle::setStyle(QStringLiteral("Fusion"));
 
     // 深色调色板：QMessageBox / QMenu 等原生弹窗跟随（04 号文档 §8 深色基底）
@@ -93,6 +101,8 @@ int main(int argc, char* argv[])
     Database database;
     DataManager dataManager(&database);
     dataManager.start();
+    qInfo() << "数据管理器已启动 · 数据目录"
+            << QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
 
     // ---- 设置与 QML 绑定层（04 号文档 §1：注入 stats / settings / theme / history）----
     AppSettings appSettings(&dataManager);
@@ -142,10 +152,13 @@ int main(int argc, char* argv[])
                     if (error.isEmpty()) {
                         error = QObject::tr("采集启动失败，可能被安全软件拦截，请重启应用或查看文档");
                     }
+                    qWarning() << "采集启动失败：" << error; // 问题回溯关键点（6.3）
                     QMetaObject::invokeMethod(
                         &statsController,
                         [&statsController, error] { statsController.setCaptureError(error); },
                         Qt::QueuedConnection);
+                } else {
+                    qInfo() << "采集已启动 · DPI =" << ppi;
                 }
             },
             Qt::QueuedConnection);
@@ -156,6 +169,7 @@ int main(int argc, char* argv[])
     QObject::connect(&appSettings, &AppSettings::calibrationChanged, &app,
                      [&appSettings, captureWorker] {
                          const int ppi = appSettings.calibrationPpi();
+                         qInfo() << "校准变更 · 采集 DPI 联动更新为" << ppi;
                          QMetaObject::invokeMethod(
                              captureWorker,
                              [captureWorker, ppi] { captureWorker->setDpi(ppi); },
@@ -178,6 +192,9 @@ int main(int argc, char* argv[])
         if (translator.load(QStringLiteral(":/qml/i18n/") + qmName
                             + QStringLiteral(".qm"))) {
             app.installTranslator(&translator);
+            qInfo() << "翻译已加载：" << qmName;
+        } else {
+            qWarning() << "翻译加载失败：" << qmName << "（回退中文源文案）";
         }
     }
 
@@ -191,8 +208,10 @@ int main(int argc, char* argv[])
     engine.rootContext()->setContextProperty(QStringLiteral("exporter"), &exporterController);
     engine.load(QUrl(QStringLiteral("qrc:/qml/Main.qml")));
     if (engine.rootObjects().isEmpty()) {
+        qCritical() << "QML 主窗口加载失败，应用退出（QML 错误见上方输出）";
         return -1;
     }
+    qInfo() << "QML 主窗口加载成功";
     QObject* window = engine.rootObjects().first();
 
     captureThread.start();
@@ -213,6 +232,7 @@ int main(int argc, char* argv[])
     QObject::connect(
         pauseAction, &QAction::toggled,
         [captureWorker, pauseAction, &statsController, &tray](bool paused) {
+            qInfo() << "用户" << (paused ? "暂停" : "恢复") << "统计";
             QMetaObject::invokeMethod(
                 captureWorker,
                 [captureWorker, paused] { paused ? captureWorker->pause() : captureWorker->resume(); },
@@ -257,18 +277,21 @@ int main(int argc, char* argv[])
     // 导出完成托盘气泡（03 号文档 §6）
     QObject::connect(&exporterController, &ExporterController::exportFinished, &tray,
                      [&tray](const QString& filePath) {
+                         qInfo() << "数据导出成功：" << filePath;
                          tray.showMessage(QObject::tr("导出完成"),
                                           QObject::tr("数据已导出到 %1").arg(filePath),
                                           QSystemTrayIcon::Information, 4000);
                      });
     QObject::connect(&exporterController, &ExporterController::exportFailed, &tray,
                      [&tray](const QString& message) {
+                         qWarning() << "数据导出失败：" << message;
                          tray.showMessage(QObject::tr("导出失败"), message,
                                           QSystemTrayIcon::Critical, 4000);
                      });
 
     // ---- 退出前冲刷积压增量并落盘（02 号文档 §5）----
     QObject::connect(&app, &QCoreApplication::aboutToQuit, &app, [&] {
+        qInfo() << "应用开始退出 · 冲刷积压增量";
         if (captureThread.isRunning()) {
             QMetaObject::invokeMethod(
                 captureWorker,
@@ -282,6 +305,8 @@ int main(int argc, char* argv[])
             captureThread.wait();
         }
         dataManager.stop();
+        qInfo() << "数据已落盘，关闭日志";
+        Logger::shutdown();
     });
 
     return app.exec();

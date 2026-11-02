@@ -50,6 +50,8 @@ add_library(cursorflow_core STATIC
     src/app/AppSettings.cpp
     src/app/HistoryController.h
     src/app/HistoryController.cpp
+    src/app/Logger.h
+    src/app/Logger.cpp
     src/app/Theme.h
     src/app/Theme.cpp
     src/export/Exporter.h
@@ -133,6 +135,10 @@ add_test(NAME tst_statscontroller COMMAND tst_statscontroller)
 add_executable(tst_appsettings tests/tst_AppSettings.cpp)
 target_link_libraries(tst_appsettings PRIVATE cursorflow_core Qt5::Test)
 add_test(NAME tst_appsettings COMMAND tst_appsettings)
+
+add_executable(tst_logger tests/tst_Logger.cpp)
+target_link_libraries(tst_logger PRIVATE cursorflow_core Qt5::Test)
+add_test(NAME tst_logger COMMAND tst_logger)
 
 add_executable(tst_historycontroller tests/tst_HistoryController.cpp)
 target_link_libraries(tst_historycontroller PRIVATE cursorflow_core Qt5::Test)
