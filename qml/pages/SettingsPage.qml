@@ -52,7 +52,7 @@ Item {
                     width: parent.width - 40
                     spacing: 0
 
-                    Row {
+                    Item {
                         width: parent.width
                         height: 52
                         Label {
@@ -84,7 +84,7 @@ Item {
                         color: theme.border
                     }
 
-                    Row {
+                    Item {
                         width: parent.width
                         height: 52
                         Label {
@@ -125,7 +125,7 @@ Item {
                         color: theme.border
                     }
 
-                    Row {
+                    Item {
                         width: parent.width
                         height: 52
                         Label {
@@ -168,7 +168,7 @@ Item {
                     width: parent.width - 40
                     spacing: 0
 
-                    Row {
+                    Item {
                         width: parent.width
                         height: 52
                         Label {
@@ -193,7 +193,7 @@ Item {
                         color: theme.border
                     }
 
-                    Row {
+                    Item {
                         width: parent.width
                         height: 52
                         Label {
@@ -229,7 +229,7 @@ Item {
                         color: theme.border
                     }
 
-                    Row {
+                    Item {
                         width: parent.width
                         height: 52
                         Label {
@@ -253,7 +253,7 @@ Item {
                     }
 
                     // 关闭窗口行为（任务 6.4）：0 每次询问 / 1 最小化到托盘 / 2 退出程序
-                    Row {
+                    Item {
                         width: parent.width
                         height: 52
                         Label {
@@ -300,7 +300,7 @@ Item {
                         settings.setCalibration(inchBox.value, widthBox.value, heightBox.value)
                     }
 
-                    Row {
+                    Item {
                         width: parent.width
                         height: 52
                         Label {
@@ -338,7 +338,7 @@ Item {
                         color: theme.border
                     }
 
-                    Row {
+                    Item {
                         width: parent.width
                         height: 52
                         Label {
@@ -387,7 +387,7 @@ Item {
                         color: theme.border
                     }
 
-                    Row {
+                    Item {
                         width: parent.width
                         height: 52
                         Label {
@@ -450,7 +450,7 @@ Item {
 
                     property int rangeDays: 30
 
-                    Row {
+                    Item {
                         width: parent.width
                         height: 52
                         Label {
@@ -476,7 +476,7 @@ Item {
                         color: theme.border
                     }
 
-                    Row {
+                    Item {
                         width: parent.width
                         height: 52
                         Button {

@@ -22,7 +22,7 @@ Item {
     // 今日缓存每 3s 变化；仅页面可见时重算，避免后台浪费
     Connections {
         target: history
-        onDataChanged: if (root.visible) root.reload()
+        function onDataChanged() { if (root.visible) root.reload() }
     }
     onVisibleChanged: if (visible) root.reload()
 

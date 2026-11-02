@@ -35,10 +35,17 @@ ApplicationWindow {
         dark: theme.border
     }
 
-    // 关闭按钮 → 隐藏到托盘，从托盘菜单退出（PRD 5.2 / 04 号文档 §3）
+    // 关闭行为（任务 6.4；PRD 3.4）：0 每次询问 / 1 最小化 / 2 退出。
+    // QML 全权处理（C++ 不再拦截，避免双重响应）：退出走 Qt.quit() 触发冲刷。
     onClosing: function (close) {
         close.accepted = false
-        root.visible = false
+        if (settings.closeAction === 2) {
+            Qt.quit()
+        } else if (settings.closeAction === 1) {
+            root.visible = false
+        } else {
+            closeAskDialog.open()
+        }
     }
 
     property bool privacyDeclined: false
@@ -128,5 +135,13 @@ ApplicationWindow {
     // 首启引导（04 号文档 §2.4）：欢迎 → 屏幕尺寸设置（可跳过）→ 完成提示
     OnboardingDialog {
         id: onboardingDialog
+    }
+
+    // 关闭窗口询问（任务 6.4 视觉优化）：同风格自定义弹窗替代原生 QMessageBox
+    CloseAskDialog {
+        id: closeAskDialog
+
+        onQuitRequested: Qt.quit()
+        onMinimizeRequested: root.visible = false
     }
 }

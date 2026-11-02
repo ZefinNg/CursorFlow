@@ -2,6 +2,33 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en">
 <context>
+    <name>CloseAskDialog</name>
+    <message>
+        <source>关闭 CursorFlow</source>
+        <translation>Close CursorFlow</translation>
+    </message>
+    <message>
+        <source>要退出程序还是最小化到系统托盘？退出将停止统计，最小化后仍会在后台记录。</source>
+        <translation>Quit the app or minimize to the tray? Quitting stops tracking; when minimized it keeps recording in the background.</translation>
+    </message>
+    <message>
+        <source>记住我的选择，不再询问</source>
+        <translation>Remember my choice and don&apos;t ask again</translation>
+    </message>
+    <message>
+        <source>退出程序</source>
+        <translation>Quit app</translation>
+    </message>
+    <message>
+        <source>最小化窗口</source>
+        <translation>Minimize window</translation>
+    </message>
+    <message>
+        <source>取消</source>
+        <translation>Cancel</translation>
+    </message>
+</context>
+<context>
     <name>DashboardPage</name>
     <message>
         <source>今日概览</source>
@@ -155,59 +182,59 @@
     <name>QObject</name>
     <message>
         <source>采集启动失败，可能被安全软件拦截，请重启应用或查看文档</source>
-        <translation type="vanished">Failed to start capture — it may be blocked by security software. Restart the app or see the documentation</translation>
+        <translation>Failed to start capture — it may be blocked by security software. Restart the app or see the documentation</translation>
     </message>
     <message>
         <source>打开 CursorFlow</source>
-        <translation type="vanished">Open CursorFlow</translation>
+        <translation>Open CursorFlow</translation>
     </message>
     <message>
         <source>暂停统计</source>
-        <translation type="vanished">Pause tracking</translation>
+        <translation>Pause tracking</translation>
     </message>
     <message>
         <source>恢复统计</source>
-        <translation type="vanished">Resume tracking</translation>
+        <translation>Resume tracking</translation>
     </message>
     <message>
         <source>今日：%1 · %2 键</source>
-        <translation type="vanished">Today: %1 · %2 keys</translation>
+        <translation>Today: %1 · %2 keys</translation>
     </message>
     <message>
         <source>退出…</source>
-        <translation type="vanished">Quit…</translation>
+        <translation>Quit…</translation>
     </message>
     <message>
         <source>退出 CursorFlow</source>
-        <translation type="vanished">Quit CursorFlow</translation>
+        <translation>Quit CursorFlow</translation>
     </message>
     <message>
         <source>退出将停止采集统计，确定要退出吗？</source>
-        <translation type="vanished">Quitting will stop tracking. Are you sure you want to quit?</translation>
+        <translation>Quitting will stop tracking. Are you sure you want to quit?</translation>
     </message>
     <message>
         <source>无法写入文件：%1</source>
-        <translation type="vanished">Cannot write file: %1</translation>
+        <translation>Cannot write file: %1</translation>
     </message>
     <message>
         <source>数据库未打开，导出失败</source>
-        <translation type="vanished">Database is not open, export failed</translation>
+        <translation>Database is not open, export failed</translation>
     </message>
     <message>
         <source>导出统计数据</source>
-        <translation type="vanished">Export data</translation>
+        <translation>Export data</translation>
     </message>
     <message>
         <source>导出失败</source>
-        <translation type="vanished">Export failed</translation>
+        <translation>Export failed</translation>
     </message>
     <message>
         <source>导出完成</source>
-        <translation type="vanished">Export complete</translation>
+        <translation>Export complete</translation>
     </message>
     <message>
         <source>数据已导出到 %1</source>
-        <translation type="vanished">Data exported to %1</translation>
+        <translation>Data exported to %1</translation>
     </message>
 </context>
 <context>

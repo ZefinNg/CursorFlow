@@ -2,6 +2,33 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="zh_CN">
 <context>
+    <name>CloseAskDialog</name>
+    <message>
+        <source>关闭 CursorFlow</source>
+        <translation>关闭 CursorFlow</translation>
+    </message>
+    <message>
+        <source>要退出程序还是最小化到系统托盘？退出将停止统计，最小化后仍会在后台记录。</source>
+        <translation>要退出程序还是最小化到系统托盘？退出将停止统计，最小化后仍会在后台记录。</translation>
+    </message>
+    <message>
+        <source>记住我的选择，不再询问</source>
+        <translation>记住我的选择，不再询问</translation>
+    </message>
+    <message>
+        <source>退出程序</source>
+        <translation>退出程序</translation>
+    </message>
+    <message>
+        <source>最小化窗口</source>
+        <translation>最小化窗口</translation>
+    </message>
+    <message>
+        <source>取消</source>
+        <translation>取消</translation>
+    </message>
+</context>
+<context>
     <name>DashboardPage</name>
     <message>
         <source>今日概览</source>
@@ -155,59 +182,59 @@
     <name>QObject</name>
     <message>
         <source>采集启动失败，可能被安全软件拦截，请重启应用或查看文档</source>
-        <translation type="vanished">采集启动失败，可能被安全软件拦截，请重启应用或查看文档</translation>
+        <translation>采集启动失败，可能被安全软件拦截，请重启应用或查看文档</translation>
     </message>
     <message>
         <source>打开 CursorFlow</source>
-        <translation type="vanished">打开 CursorFlow</translation>
+        <translation>打开 CursorFlow</translation>
     </message>
     <message>
         <source>暂停统计</source>
-        <translation type="vanished">暂停统计</translation>
+        <translation>暂停统计</translation>
     </message>
     <message>
         <source>恢复统计</source>
-        <translation type="vanished">恢复统计</translation>
+        <translation>恢复统计</translation>
     </message>
     <message>
         <source>今日：%1 · %2 键</source>
-        <translation type="vanished">今日：%1 · %2 键</translation>
+        <translation>今日：%1 · %2 键</translation>
     </message>
     <message>
         <source>退出…</source>
-        <translation type="vanished">退出…</translation>
+        <translation>退出…</translation>
     </message>
     <message>
         <source>退出 CursorFlow</source>
-        <translation type="vanished">退出 CursorFlow</translation>
+        <translation>退出 CursorFlow</translation>
     </message>
     <message>
         <source>退出将停止采集统计，确定要退出吗？</source>
-        <translation type="vanished">退出将停止采集统计，确定要退出吗？</translation>
+        <translation>退出将停止采集统计，确定要退出吗？</translation>
     </message>
     <message>
         <source>无法写入文件：%1</source>
-        <translation type="vanished">无法写入文件：%1</translation>
+        <translation>无法写入文件：%1</translation>
     </message>
     <message>
         <source>数据库未打开，导出失败</source>
-        <translation type="vanished">数据库未打开，导出失败</translation>
+        <translation>数据库未打开，导出失败</translation>
     </message>
     <message>
         <source>导出统计数据</source>
-        <translation type="vanished">导出统计数据</translation>
+        <translation>导出统计数据</translation>
     </message>
     <message>
         <source>导出失败</source>
-        <translation type="vanished">导出失败</translation>
+        <translation>导出失败</translation>
     </message>
     <message>
         <source>导出完成</source>
-        <translation type="vanished">导出完成</translation>
+        <translation>导出完成</translation>
     </message>
     <message>
         <source>数据已导出到 %1</source>
-        <translation type="vanished">数据已导出到 %1</translation>
+        <translation>数据已导出到 %1</translation>
     </message>
 </context>
 <context>

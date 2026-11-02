@@ -17,5 +17,6 @@
         <file alias="i18n/CursorFlow_zh_CN.qm">i18n/CursorFlow_zh_CN.qm</file>
         <file alias="i18n/CursorFlow_en.qm">i18n/CursorFlow_en.qm</file>
         <file>components/OnboardingDialog.qml</file>
+        <file>components/CloseAskDialog.qml</file>
     </qresource>
 </RCC>
