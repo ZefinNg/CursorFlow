@@ -33,6 +33,8 @@
 #include <QSystemTrayIcon>
 #include <QThread>
 #include <QTimer>
+
+#include "version.h"
 #include <QTranslator>
 
 namespace {
@@ -63,6 +65,8 @@ int main(int argc, char* argv[])
     QApplication app(argc, argv); // 托盘菜单需要 QtWidgets
     QApplication::setOrganizationName(QStringLiteral("CursorFlow"));
     QApplication::setApplicationName(QStringLiteral("CursorFlow"));
+    // 版本号与 project(VERSION)/安装包同源（任务 6.1，M4；version.h 由 CMake 生成）
+    QApplication::setApplicationVersion(QString::fromLatin1(CURSORFLOW_VERSION));
 
     QQuickStyle::setStyle(QStringLiteral("Fusion"));
 

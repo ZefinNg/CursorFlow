@@ -3,6 +3,8 @@
 #include <QCoreApplication>
 #include <QSettings>
 
+#include "version.h"
+
 #include <cmath>
 
 namespace {
@@ -15,6 +17,7 @@ const QLatin1String kFontScale("display/fontScale");
 const QLatin1String kAnimations("display/animationsEnabled");
 const QLatin1String kCalibrationInch("calibration/diagonalInch");
 const QLatin1String kCalibrationPpi("calibration/ppi");
+const QLatin1String kOnboarded("general/onboarded");
 
 // 自启注册键（04 号文档 §2.3：Win 注册表 Run；macOS/Linux 机制在跨平台任务接入）
 void applyPlatformAutostart(bool enabled)
@@ -50,6 +53,7 @@ AppSettings::AppSettings(DataManager* dataManager, QObject* parent)
     animationsEnabled_ = settings.value(kAnimations, true).toBool();
     calibrationDiagonalInch_ = settings.value(kCalibrationInch, 0.0).toDouble();
     calibrationPpi_ = settings.value(kCalibrationPpi, 96).toInt();
+    onboarded_ = settings.value(kOnboarded, false).toBool();
 }
 
 void AppSettings::setAutostart(bool enabled)
@@ -152,6 +156,35 @@ void AppSettings::setCalibration(double diagonalInch, int resolutionWidth,
     settings.setValue(kCalibrationInch, inch);
     settings.setValue(kCalibrationPpi, ppi);
     emit calibrationChanged();
+}
+
+void AppSettings::setOnboarded(bool done)
+{
+    if (onboarded_ == done) {
+        return;
+    }
+    onboarded_ = done;
+    QSettings settings;
+    settings.setValue(kOnboarded, done);
+    emit onboardedChanged(done);
+}
+
+QString AppSettings::appVersion() const
+{
+    return QCoreApplication::applicationVersion();
+}
+
+QString AppSettings::qtVersion() const
+{
+    return QString::fromLatin1(qVersion());
+}
+
+QString AppSettings::buildInfo() const
+{
+    // 构建日期 + 编译器（version.h 由 CMake configure_file 生成，任务 6.1）
+    return QStringLiteral("%1 · %2")
+        .arg(QString::fromLatin1(CURSORFLOW_BUILD_DATE),
+             QString::fromLatin1(CURSORFLOW_BUILD_COMPILER));
 }
 
 bool AppSettings::systemPrefersDark() const

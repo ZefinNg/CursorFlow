@@ -1,0 +1,7 @@
+#pragma once
+
+// 编译期版本元信息（任务 6.1，M4）：由 CMake configure_file 从本模板生成，
+// 版本号与 project(VERSION) / CPack 安装包版本同源，禁止在代码中硬编码。
+#define CURSORFLOW_VERSION "@CURSORFLOW_VERSION@"
+#define CURSORFLOW_BUILD_DATE "@CURSORFLOW_BUILD_DATE@"
+#define CURSORFLOW_BUILD_COMPILER "@CURSORFLOW_BUILD_COMPILER@"

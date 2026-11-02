@@ -103,17 +103,30 @@ ApplicationWindow {
         }
     }
 
-    // 首次启动弹出隐私声明；用命令式 open() 避免 Popup 绑定被 close() 断开
+    // 首次启动弹出隐私声明；用命令式 open() 避免 Popup 绑定被 close() 断开。
+    // 隐私同意后进入首启引导（任务 6.2，M4）；已同意隐私但未引导过的老用户也补一次。
     PrivacyDialog {
         id: privacyDialog
 
-        onAccepted: privacy.accept()
+        onAccepted: {
+            privacy.accept()
+            if (!settings.onboarded) {
+                onboardingDialog.open()
+            }
+        }
         onRejected: root.privacyDeclined = true
 
         Component.onCompleted: {
             if (!privacy.accepted) {
                 open()
+            } else if (!settings.onboarded) {
+                onboardingDialog.open()
             }
         }
+    }
+
+    // 首启引导（04 号文档 §2.4）：欢迎 → 屏幕尺寸设置（可跳过）→ 完成提示
+    OnboardingDialog {
+        id: onboardingDialog
     }
 }

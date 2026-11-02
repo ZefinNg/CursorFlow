@@ -23,6 +23,12 @@ class AppSettings : public QObject
     Q_PROPERTY(double calibrationDiagonalInch READ calibrationDiagonalInch
                    NOTIFY calibrationChanged)
     Q_PROPERTY(int calibrationPpi READ calibrationPpi NOTIFY calibrationChanged)
+    // 首启引导完成标记（任务 6.2，M4）：true 后不再弹出 OnboardingDialog
+    Q_PROPERTY(bool onboarded READ onboarded WRITE setOnboarded NOTIFY onboardedChanged)
+    // 软件信息（任务 6.1，M4）：编译期注入，运行期不变（CONSTANT）
+    Q_PROPERTY(QString appVersion READ appVersion CONSTANT)
+    Q_PROPERTY(QString qtVersion READ qtVersion CONSTANT)
+    Q_PROPERTY(QString buildInfo READ buildInfo CONSTANT)
 
 public:
     // retentionDays 变更联动聚合层（可空，仅测试场景传 nullptr）
@@ -58,6 +64,14 @@ public:
     double calibrationDiagonalInch() const { return calibrationDiagonalInch_; }
     int calibrationPpi() const { return calibrationPpi_; }
 
+    bool onboarded() const { return onboarded_; }
+    void setOnboarded(bool done);
+
+    // 软件信息（任务 6.1，M4）：版本与 project(VERSION)/安装包同源（version.h）
+    QString appVersion() const;
+    QString qtVersion() const;
+    QString buildInfo() const;
+
 signals:
     void autostartChanged(bool enabled);
     void languageChanged(const QString& language);
@@ -66,6 +80,7 @@ signals:
     void fontScaleChanged(double scale);
     void animationsEnabledChanged(bool enabled);
     void calibrationChanged();
+    void onboardedChanged(bool done);
 
 private:
     DataManager* dataManager_;
@@ -78,4 +93,5 @@ private:
     bool animationsEnabled_ = true;
     double calibrationDiagonalInch_ = 0.0;
     int calibrationPpi_ = 96; // 未校准默认 96 DPI 估算（06 号文档 §6 风险应对）
+    bool onboarded_ = false;
 };

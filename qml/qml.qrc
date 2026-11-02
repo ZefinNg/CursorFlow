@@ -1,5 +1,4 @@
-<!DOCTYPE RCC>
-<RCC version="1.0">
+<RCC>
     <qresource prefix="/qml">
         <file>Main.qml</file>
         <file>components/PrivacyDialog.qml</file>
@@ -16,5 +15,6 @@
         <file>icons/settings.svg</file>
         <file alias="i18n/CursorFlow_zh_CN.qm">i18n/CursorFlow_zh_CN.qm</file>
         <file alias="i18n/CursorFlow_en.qm">i18n/CursorFlow_en.qm</file>
+        <file>components/OnboardingDialog.qml</file>
     </qresource>
 </RCC>

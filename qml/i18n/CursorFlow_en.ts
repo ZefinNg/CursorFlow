@@ -82,6 +82,57 @@
     </message>
 </context>
 <context>
+    <name>OnboardingDialog</name>
+    <message>
+        <source>欢迎使用 CursorFlow</source>
+        <translation>Welcome to CursorFlow</translation>
+    </message>
+    <message>
+        <source>设置屏幕尺寸</source>
+        <translation>Set screen size</translation>
+    </message>
+    <message>
+        <source>设置完成</source>
+        <translation>All set</translation>
+    </message>
+    <message>
+        <source>只需 10 秒完成初始设置。CursorFlow 仅统计鼠标移动距离与按键、点击、滚动的次数，不记录任何按键内容，所有数据仅保存在本机。</source>
+        <translation>Takes 10 seconds. CursorFlow counts only mouse distance and the number of keys, clicks and scroll steps — no content is ever recorded, and all data stays on this machine.</translation>
+    </message>
+    <message>
+        <source>填写显示器对角线尺寸与分辨率，让“鼠标距离”按真实物理米数换算；不设置则按 96 PPI 估算。</source>
+        <translation>Enter your display's diagonal size and resolution so "mouse distance" reflects real-world meters; otherwise a 96 PPI estimate is used.</translation>
+    </message>
+    <message>
+        <source>对角线尺寸（英寸）</source>
+        <translation>Diagonal size (inches)</translation>
+    </message>
+    <message>
+        <source>分辨率（宽 × 高）</source>
+        <translation>Resolution (W × H)</translation>
+    </message>
+    <message>
+        <source>换算结果：%1 PPI（当前系统屏幕：%2 × %3）</source>
+        <translation>Result: %1 PPI (current screen: %2 × %3)</translation>
+    </message>
+    <message>
+        <source>屏幕尺寸信息已保存。你可以随时在 设置 → 校准 中修改，未校准时鼠标距离按 96 PPI 估算。</source>
+        <translation>Screen size saved. You can change it anytime in Settings → Calibration; without calibration, distance uses a 96 PPI estimate.</translation>
+    </message>
+    <message>
+        <source>跳过</source>
+        <translation>Skip</translation>
+    </message>
+    <message>
+        <source>下一步</source>
+        <translation>Next</translation>
+    </message>
+    <message>
+        <source>完成</source>
+        <translation>Done</translation>
+    </message>
+</context>
+<context>
     <name>PrivacyDialog</name>
     <message>
         <source>隐私声明</source>
@@ -104,59 +155,59 @@
     <name>QObject</name>
     <message>
         <source>采集启动失败，可能被安全软件拦截，请重启应用或查看文档</source>
-        <translation>Failed to start capture — it may be blocked by security software. Restart the app or see the documentation</translation>
+        <translation type="vanished">Failed to start capture — it may be blocked by security software. Restart the app or see the documentation</translation>
     </message>
     <message>
         <source>打开 CursorFlow</source>
-        <translation>Open CursorFlow</translation>
+        <translation type="vanished">Open CursorFlow</translation>
     </message>
     <message>
         <source>暂停统计</source>
-        <translation>Pause tracking</translation>
+        <translation type="vanished">Pause tracking</translation>
     </message>
     <message>
         <source>恢复统计</source>
-        <translation>Resume tracking</translation>
+        <translation type="vanished">Resume tracking</translation>
     </message>
     <message>
         <source>今日：%1 · %2 键</source>
-        <translation>Today: %1 · %2 keys</translation>
+        <translation type="vanished">Today: %1 · %2 keys</translation>
     </message>
     <message>
         <source>退出…</source>
-        <translation>Quit…</translation>
+        <translation type="vanished">Quit…</translation>
     </message>
     <message>
         <source>退出 CursorFlow</source>
-        <translation>Quit CursorFlow</translation>
+        <translation type="vanished">Quit CursorFlow</translation>
     </message>
     <message>
         <source>退出将停止采集统计，确定要退出吗？</source>
-        <translation>Quitting will stop tracking. Are you sure you want to quit?</translation>
+        <translation type="vanished">Quitting will stop tracking. Are you sure you want to quit?</translation>
     </message>
     <message>
         <source>无法写入文件：%1</source>
-        <translation>Cannot write file: %1</translation>
+        <translation type="vanished">Cannot write file: %1</translation>
     </message>
     <message>
         <source>数据库未打开，导出失败</source>
-        <translation>Database is not open, export failed</translation>
+        <translation type="vanished">Database is not open, export failed</translation>
     </message>
     <message>
         <source>导出统计数据</source>
-        <translation>Export data</translation>
+        <translation type="vanished">Export data</translation>
     </message>
     <message>
         <source>导出失败</source>
-        <translation>Export failed</translation>
+        <translation type="vanished">Export failed</translation>
     </message>
     <message>
         <source>导出完成</source>
-        <translation>Export complete</translation>
+        <translation type="vanished">Export complete</translation>
     </message>
     <message>
         <source>数据已导出到 %1</source>
-        <translation>Data exported to %1</translation>
+        <translation type="vanished">Data exported to %1</translation>
     </message>
 </context>
 <context>
@@ -292,6 +343,22 @@
     <message>
         <source>已导出到 %1</source>
         <translation>Exported to %1</translation>
+    </message>
+    <message>
+        <source>关于</source>
+        <translation>About</translation>
+    </message>
+    <message>
+        <source>基于 Qt %1 · %2</source>
+        <translation>Based on Qt %1 · %2</translation>
+    </message>
+    <message>
+        <source>开源许可：本应用基于 MIT 许可证发布；Qt 框架在 LGPL v3 下使用。数据仅保存在本机，不联网。</source>
+        <translation>License: this app is released under the MIT license; the Qt framework is used under LGPL v3. Data stays on this machine — no network access.</translation>
+    </message>
+    <message>
+        <source>项目主页：&lt;a href=&quot;https://github.com/ZefinNg/CursorFlow&quot;&gt;github.com/ZefinNg/CursorFlow&lt;/a&gt;</source>
+        <translation>Project home: &lt;a href=&quot;https://github.com/ZefinNg/CursorFlow&quot;&gt;github.com/ZefinNg/CursorFlow&lt;/a&gt;</translation>
     </message>
 </context>
 <context>

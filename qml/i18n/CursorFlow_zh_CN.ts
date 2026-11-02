@@ -82,6 +82,57 @@
     </message>
 </context>
 <context>
+    <name>OnboardingDialog</name>
+    <message>
+        <source>欢迎使用 CursorFlow</source>
+        <translation>欢迎使用 CursorFlow</translation>
+    </message>
+    <message>
+        <source>设置屏幕尺寸</source>
+        <translation>设置屏幕尺寸</translation>
+    </message>
+    <message>
+        <source>设置完成</source>
+        <translation>设置完成</translation>
+    </message>
+    <message>
+        <source>只需 10 秒完成初始设置。CursorFlow 仅统计鼠标移动距离与按键、点击、滚动的次数，不记录任何按键内容，所有数据仅保存在本机。</source>
+        <translation>只需 10 秒完成初始设置。CursorFlow 仅统计鼠标移动距离与按键、点击、滚动的次数，不记录任何按键内容，所有数据仅保存在本机。</translation>
+    </message>
+    <message>
+        <source>填写显示器对角线尺寸与分辨率，让“鼠标距离”按真实物理米数换算；不设置则按 96 PPI 估算。</source>
+        <translation>填写显示器对角线尺寸与分辨率，让“鼠标距离”按真实物理米数换算；不设置则按 96 PPI 估算。</translation>
+    </message>
+    <message>
+        <source>对角线尺寸（英寸）</source>
+        <translation>对角线尺寸（英寸）</translation>
+    </message>
+    <message>
+        <source>分辨率（宽 × 高）</source>
+        <translation>分辨率（宽 × 高）</translation>
+    </message>
+    <message>
+        <source>换算结果：%1 PPI（当前系统屏幕：%2 × %3）</source>
+        <translation>换算结果：%1 PPI（当前系统屏幕：%2 × %3）</translation>
+    </message>
+    <message>
+        <source>屏幕尺寸信息已保存。你可以随时在 设置 → 校准 中修改，未校准时鼠标距离按 96 PPI 估算。</source>
+        <translation>屏幕尺寸信息已保存。你可以随时在 设置 → 校准 中修改，未校准时鼠标距离按 96 PPI 估算。</translation>
+    </message>
+    <message>
+        <source>跳过</source>
+        <translation>跳过</translation>
+    </message>
+    <message>
+        <source>下一步</source>
+        <translation>下一步</translation>
+    </message>
+    <message>
+        <source>完成</source>
+        <translation>完成</translation>
+    </message>
+</context>
+<context>
     <name>PrivacyDialog</name>
     <message>
         <source>隐私声明</source>
@@ -104,59 +155,59 @@
     <name>QObject</name>
     <message>
         <source>采集启动失败，可能被安全软件拦截，请重启应用或查看文档</source>
-        <translation>采集启动失败，可能被安全软件拦截，请重启应用或查看文档</translation>
+        <translation type="vanished">采集启动失败，可能被安全软件拦截，请重启应用或查看文档</translation>
     </message>
     <message>
         <source>打开 CursorFlow</source>
-        <translation>打开 CursorFlow</translation>
+        <translation type="vanished">打开 CursorFlow</translation>
     </message>
     <message>
         <source>暂停统计</source>
-        <translation>暂停统计</translation>
+        <translation type="vanished">暂停统计</translation>
     </message>
     <message>
         <source>恢复统计</source>
-        <translation>恢复统计</translation>
+        <translation type="vanished">恢复统计</translation>
     </message>
     <message>
         <source>今日：%1 · %2 键</source>
-        <translation>今日：%1 · %2 键</translation>
+        <translation type="vanished">今日：%1 · %2 键</translation>
     </message>
     <message>
         <source>退出…</source>
-        <translation>退出…</translation>
+        <translation type="vanished">退出…</translation>
     </message>
     <message>
         <source>退出 CursorFlow</source>
-        <translation>退出 CursorFlow</translation>
+        <translation type="vanished">退出 CursorFlow</translation>
     </message>
     <message>
         <source>退出将停止采集统计，确定要退出吗？</source>
-        <translation>退出将停止采集统计，确定要退出吗？</translation>
+        <translation type="vanished">退出将停止采集统计，确定要退出吗？</translation>
     </message>
     <message>
         <source>无法写入文件：%1</source>
-        <translation>无法写入文件：%1</translation>
+        <translation type="vanished">无法写入文件：%1</translation>
     </message>
     <message>
         <source>数据库未打开，导出失败</source>
-        <translation>数据库未打开，导出失败</translation>
+        <translation type="vanished">数据库未打开，导出失败</translation>
     </message>
     <message>
         <source>导出统计数据</source>
-        <translation>导出统计数据</translation>
+        <translation type="vanished">导出统计数据</translation>
     </message>
     <message>
         <source>导出失败</source>
-        <translation>导出失败</translation>
+        <translation type="vanished">导出失败</translation>
     </message>
     <message>
         <source>导出完成</source>
-        <translation>导出完成</translation>
+        <translation type="vanished">导出完成</translation>
     </message>
     <message>
         <source>数据已导出到 %1</source>
-        <translation>数据已导出到 %1</translation>
+        <translation type="vanished">数据已导出到 %1</translation>
     </message>
 </context>
 <context>
@@ -292,6 +343,22 @@
     <message>
         <source>已导出到 %1</source>
         <translation>已导出到 %1</translation>
+    </message>
+    <message>
+        <source>关于</source>
+        <translation>关于</translation>
+    </message>
+    <message>
+        <source>基于 Qt %1 · %2</source>
+        <translation>基于 Qt %1 · %2</translation>
+    </message>
+    <message>
+        <source>开源许可：本应用基于 MIT 许可证发布；Qt 框架在 LGPL v3 下使用。数据仅保存在本机，不联网。</source>
+        <translation>开源许可：本应用基于 MIT 许可证发布；Qt 框架在 LGPL v3 下使用。数据仅保存在本机，不联网。</translation>
+    </message>
+    <message>
+        <source>项目主页：&lt;a href=&quot;https://github.com/ZefinNg/CursorFlow&quot;&gt;github.com/ZefinNg/CursorFlow&lt;/a&gt;</source>
+        <translation>项目主页：&lt;a href=&quot;https://github.com/ZefinNg/CursorFlow&quot;&gt;github.com/ZefinNg/CursorFlow&lt;/a&gt;</translation>
     </message>
 </context>
 <context>

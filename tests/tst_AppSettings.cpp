@@ -15,6 +15,7 @@ private slots:
     void defaultsOnFirstStart();
     void settersPersistAndNotify();
     void calibration();       // 4.4：英寸+分辨率→PPI，持久化与无效输入重置
+    void onboardingAndVersion(); // 6.2/6.1（M4）：首启标记持久化 + 版本信息只读
     void autostartRegistry(); // 放最后：Windows 会写真实 HKCU Run 键，测试末尾恢复
 
 private:
@@ -25,6 +26,8 @@ void TestAppSettings::initTestCase()
 {
     QCoreApplication::setOrganizationName(QStringLiteral("CursorFlow"));
     QCoreApplication::setApplicationName(QStringLiteral("CursorFlow"));
+    // 模拟主程序的版本注入（main.cpp 读 version.h；任务 6.1）
+    QCoreApplication::setApplicationVersion(QStringLiteral("0.1.0"));
 
     // 配置写入临时目录，避免污染开发机真实设置
     QSettings::setDefaultFormat(QSettings::IniFormat);
@@ -103,6 +106,34 @@ void TestAppSettings::calibration()
     settings.setCalibration(24.0, 1920, 1080);
     settings.setCalibration(24.0, 1920, 1080);
     QCOMPARE(spy.count(), 3);
+}
+
+void TestAppSettings::onboardingAndVersion()
+{
+    QSettings().clear();
+    AppSettings settings(nullptr);
+    QSignalSpy spy(&settings, &AppSettings::onboardedChanged);
+
+    // 首启默认未引导（任务 6.2）
+    QVERIFY(!settings.onboarded());
+
+    settings.setOnboarded(true);
+    QCOMPARE(spy.count(), 1);
+    QVERIFY(settings.onboarded());
+
+    // 新实例恢复（模拟重启）后不再弹引导
+    AppSettings restored(nullptr);
+    QVERIFY(restored.onboarded());
+
+    // 幂等：同值不重复通知
+    settings.setOnboarded(true);
+    QCOMPARE(spy.count(), 1);
+
+    // 软件信息只读属性（任务 6.1）：版本与 project(VERSION) 同源，非空即可
+    QVERIFY(!settings.appVersion().isEmpty());
+    QVERIFY(!settings.qtVersion().isEmpty());
+    QVERIFY(!settings.buildInfo().isEmpty());
+    QCOMPARE(settings.appVersion(), QStringLiteral("0.1.0"));
 }
 
 void TestAppSettings::autostartRegistry()

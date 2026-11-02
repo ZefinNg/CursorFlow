@@ -86,6 +86,13 @@ elseif(UNIX)
     target_link_libraries(cursorflow_core PUBLIC ${X11_X11_LIB} ${X11_Xi_LIB})
 endif()
 target_include_directories(cursorflow_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+# 编译期版本注入（任务 6.1，M4）：version.h 与 project(VERSION)/CPack 同源
+set(CURSORFLOW_VERSION ${PROJECT_VERSION})
+string(TIMESTAMP CURSORFLOW_BUILD_DATE "%Y-%m-%d")
+set(CURSORFLOW_BUILD_COMPILER "${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
+configure_file(src/app/version.h.in version.h @ONLY)
+target_include_directories(cursorflow_core PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(cursorflow_core PUBLIC Qt5::Sql Qt5::Widgets)
 
 # ---- 主程序 ----

@@ -506,6 +506,58 @@ Item {
                     exportStatus.color = "#F0B429"
                 }
             }
+
+            // ---- 关于（任务 6.1，M4；04 号文档 §2.3）：只读软件信息 ----
+            Label {
+                text: qsTr("关于")
+                color: theme.textDim
+                font.pixelSize: 12
+                font.letterSpacing: 1
+            }
+            Rectangle {
+                width: parent.width
+                height: aboutCol.implicitHeight + 24
+                radius: 12
+                color: theme.surface
+                border.color: theme.border
+
+                Column {
+                    id: aboutCol
+                    x: 20
+                    y: 12
+                    width: parent.width - 40
+                    spacing: 8
+
+                    // 版本号与 project(VERSION)/安装包同源（CMake version.h 注入）
+                    Label {
+                        text: "CursorFlow v" + settings.appVersion
+                        color: theme.text
+                        font.pixelSize: 14
+                        font.weight: Font.DemiBold
+                    }
+                    Label {
+                        text: qsTr("基于 Qt %1 · %2")
+                                  .arg(settings.qtVersion).arg(settings.buildInfo)
+                        color: theme.textDim
+                        font.pixelSize: 12
+                    }
+                    Label {
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        text: qsTr("开源许可：本应用基于 MIT 许可证发布；Qt 框架在 LGPL v3 下使用。数据仅保存在本机，不联网。")
+                        color: theme.textDim
+                        font.pixelSize: 12
+                    }
+                    Label {
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        text: qsTr("项目主页：<a href=\"https://github.com/ZefinNg/CursorFlow\">github.com/ZefinNg/CursorFlow</a>")
+                        color: theme.textDim
+                        font.pixelSize: 12
+                        onLinkActivated: function (link) { Qt.openUrlExternally(link) }
+                    }
+                }
+            }
         }
     }
 }
