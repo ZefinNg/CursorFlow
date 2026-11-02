@@ -12,6 +12,8 @@ Item {
     property int pageIndex: 1
     property int days: 7
     property var series: []
+    // 今日分布放大态（任务 6.5）：放大后趋势图收起，柱状图填满剩余区域
+    property bool expanded: false
 
     function reload() {
         series = history.dailySeries(root.days)
@@ -97,13 +99,23 @@ Item {
             }
         }
 
-        // 趋势图卡片
+        // 趋势图卡片（放大今日分布时动画收起，任务 6.5）
         Rectangle {
             width: parent.width
-            height: content.height - 34 - 16 - 16 - 130
+            height: root.expanded ? 0 : content.height - 34 - 16 - 16 - 130
             radius: 12
             color: theme.surface
             border.color: theme.border
+            clip: true
+            visible: height > 4
+            opacity: visible ? 1 : 0
+
+            Behavior on height {
+                NumberAnimation { duration: 260; easing.type: Easing.InOutCubic }
+            }
+            Behavior on opacity {
+                NumberAnimation { duration: 200 }
+            }
 
             TrendChart {
                 anchors.fill: parent
@@ -133,31 +145,88 @@ Item {
             }
         }
 
-        // 今日 24 小时分布卡片
+        // 今日 24 小时分布卡片（任务 6.5：可放大填满剩余区域，切换柱状图）
         Rectangle {
             width: parent.width
-            height: 130
+            height: root.expanded ? content.height - 34 - 16 - 16 : 130
             radius: 12
             color: theme.surface
             border.color: theme.border
+            clip: true
 
-            Column {
+            Behavior on height {
+                NumberAnimation { duration: 260; easing.type: Easing.InOutCubic }
+            }
+
+            Label {
                 x: 20
                 y: 14
-                width: parent.width - 40
-                spacing: 14
+                text: qsTr("今日 24 小时分布")
+                color: theme.textDim
+                font.pixelSize: 12
+                font.letterSpacing: 1
+            }
+
+            // 放大/缩小按钮（右上角）
+            Rectangle {
+                anchors.right: parent.right
+                anchors.rightMargin: 14
+                anchors.top: parent.top
+                anchors.topMargin: 10
+                width: 26
+                height: 26
+                radius: 8
+                color: expandBtn.containsMouse ? theme.border : "transparent"
+                border.color: theme.border
 
                 Label {
-                    text: qsTr("今日 24 小时分布")
-                    color: theme.textDim
-                    font.pixelSize: 12
-                    font.letterSpacing: 1
+                    anchors.centerIn: parent
+                    text: root.expanded ? "−" : "＋"
+                    color: theme.text
+                    font.pixelSize: 14
                 }
+                MouseArea {
+                    id: expandBtn
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: root.expanded = !root.expanded
+                }
+            }
 
-                HeatmapGrid {
-                    width: parent.width
-                    height: 56
-                    hours: history.todayHourly
+            // 缩小态：24 格热力图
+            HeatmapGrid {
+                x: 20
+                y: 40
+                width: parent.width - 40
+                height: root.expanded ? 0 : 56
+                opacity: root.expanded ? 0 : 1
+                visible: height > 1
+                hours: history.todayHourly
+
+                Behavior on height {
+                    NumberAnimation { duration: 220; easing.type: Easing.InOutCubic }
+                }
+                Behavior on opacity {
+                    NumberAnimation { duration: 180 }
+                }
+            }
+
+            // 放大态：逐小时柱状图（任务 6.5）
+            HourlyBars {
+                x: 20
+                y: 40
+                width: parent.width - 40
+                height: root.expanded ? parent.height - 40 - 14 : 0
+                opacity: root.expanded ? 1 : 0
+                visible: height > 1
+                hours: history.todayHourly
+
+                Behavior on height {
+                    NumberAnimation { duration: 220; easing.type: Easing.InOutCubic }
+                }
+                Behavior on opacity {
+                    NumberAnimation { duration: 180 }
                 }
             }
         }

@@ -7,6 +7,7 @@
         <file>components/StatCard.qml</file>
         <file>components/TrendChart.qml</file>
         <file>components/HeatmapGrid.qml</file>
+        <file>components/HourlyBars.qml</file>
         <file>components/ParticleTrail.qml</file>
         <file>pages/DashboardPage.qml</file>
         <file>pages/HistoryPage.qml</file>

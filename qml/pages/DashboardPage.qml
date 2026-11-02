@@ -9,6 +9,8 @@ Item {
     id: root
 
     property int pageIndex: 0
+    // 今日分布放大态（任务 6.5）：放大时收起统计卡与粒子区，今日分布填满剩余区域
+    property bool expanded: false
 
     Column {
         id: content
@@ -16,6 +18,7 @@ Item {
         x: 28
         y: 28
         width: parent.width - 56
+        height: parent.height - 56
         spacing: 14
 
         // 标题 + 暂停标签
@@ -65,6 +68,7 @@ Item {
 
         // 采集失败横幅（04 号文档 §6：原因 + 引导，如 macOS 辅助功能授权路径）
         Rectangle {
+            id: errorBanner
             visible: stats.captureError !== ""
             width: parent.width
             height: Math.max(36, errorLabel.implicitHeight + 20)
@@ -88,7 +92,13 @@ Item {
             id: cardsRow
 
             width: parent.width
+            height: root.expanded ? 0 : 120
+            clip: true
             spacing: 16
+
+            Behavior on height {
+                NumberAnimation { duration: 260; easing.type: Easing.InOutCubic }
+            }
 
             // 显式三实例（不用 Repeater）：value 绑定随 todayChanged 逐卡片动画，
             // 避免数组 model 重建导致动画重置
@@ -119,12 +129,19 @@ Item {
         }
 
         // 实时动态区：粒子轨迹（04 号文档 §2.1）。动效关闭时不创建实例（§7）。
+        // 放大今日分布时动画收起（任务 6.5）。
         Rectangle {
             width: parent.width
-            height: 120
+            height: root.expanded ? 0 : 120
             radius: 12
             color: theme.surface
             border.color: theme.border
+            clip: true
+            visible: height > 4
+
+            Behavior on height {
+                NumberAnimation { duration: 260; easing.type: Easing.InOutCubic }
+            }
 
             Loader {
                 anchors.fill: parent
@@ -141,31 +158,91 @@ Item {
             }
         }
 
-        // 今日 24 小时分布（04 号文档 §2.1 底部热力图）
+        // 今日 24 小时分布（04 号文档 §2.1 底部热力图；任务 6.5 可放大填满剩余区域）
         Rectangle {
             width: parent.width
-            height: 120
+            height: root.expanded
+                    ? content.height - 26 - 14
+                      - (errorBanner.visible ? errorBanner.height + 14 : 0)
+                    : 120
             radius: 12
             color: theme.surface
             border.color: theme.border
+            clip: true
 
-            Column {
+            Behavior on height {
+                NumberAnimation { duration: 260; easing.type: Easing.InOutCubic }
+            }
+
+            Label {
                 x: 20
                 y: 12
-                width: parent.width - 40
-                spacing: 12
+                text: qsTr("今日 24 小时分布")
+                color: theme.textDim
+                font.pixelSize: 12
+                font.letterSpacing: 1
+            }
+
+            // 放大/缩小按钮（右上角，任务 6.5）
+            Rectangle {
+                anchors.right: parent.right
+                anchors.rightMargin: 14
+                anchors.top: parent.top
+                anchors.topMargin: 8
+                width: 26
+                height: 26
+                radius: 8
+                color: expandBtn.containsMouse ? theme.border : "transparent"
+                border.color: theme.border
 
                 Label {
-                    text: qsTr("今日 24 小时分布")
-                    color: theme.textDim
-                    font.pixelSize: 12
-                    font.letterSpacing: 1
+                    anchors.centerIn: parent
+                    text: root.expanded ? "−" : "＋"
+                    color: theme.text
+                    font.pixelSize: 14
                 }
+                MouseArea {
+                    id: expandBtn
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: root.expanded = !root.expanded
+                }
+            }
 
-                HeatmapGrid {
-                    width: parent.width
-                    height: 50
-                    hours: history.todayHourly
+            // 缩小态：24 格热力图
+            HeatmapGrid {
+                x: 20
+                y: 40
+                width: parent.width - 40
+                height: root.expanded ? 0 : 50
+                opacity: root.expanded ? 0 : 1
+                visible: height > 1
+                hours: history.todayHourly
+
+                Behavior on height {
+                    NumberAnimation { duration: 220; easing.type: Easing.InOutCubic }
+                }
+                Behavior on opacity {
+                    NumberAnimation { duration: 180 }
+                }
+            }
+
+            // 放大态：逐小时柱状图
+            HourlyBars {
+                x: 20
+                y: 40
+                width: parent.width - 40
+                height: root.expanded ? parent.height - 40 - 12 : 0
+                opacity: root.expanded ? 1 : 0
+                visible: height > 1
+                hours: history.todayHourly
+
+                Behavior on height {
+                    NumberAnimation { duration: 220; easing.type: Easing.InOutCubic }
+                }
+                Behavior on opacity {
+                    NumberAnimation { duration: 180 }
                 }
             }
         }

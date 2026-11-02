@@ -98,6 +98,13 @@
     </message>
 </context>
 <context>
+    <name>HourlyBars</name>
+    <message>
+        <source>%1:00 – %2 · %3 键</source>
+        <translation>%1:00 – %2 · %3 键</translation>
+    </message>
+</context>
+<context>
     <name>Main</name>
     <message>
         <source>CursorFlow</source>
