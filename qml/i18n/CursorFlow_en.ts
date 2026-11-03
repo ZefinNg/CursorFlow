@@ -2,6 +2,147 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en">
 <context>
+    <name>AchievementController</name>
+    <message>
+        <source>绕城一圈</source>
+        <translation>Around the City</translation>
+    </message>
+    <message>
+        <source>累计鼠标移动距离达到 10 km</source>
+        <translation>Total cursor distance reaches 10 km</translation>
+    </message>
+    <message>
+        <source>马拉松选手</source>
+        <translation>Marathon Runner</translation>
+    </message>
+    <message>
+        <source>累计鼠标移动距离达到 42.195 km</source>
+        <translation>Total cursor distance reaches 42.195 km</translation>
+    </message>
+    <message>
+        <source>环球旅行家</source>
+        <translation>Globetrotter</translation>
+    </message>
+    <message>
+        <source>累计鼠标移动距离达到 40075 km（绕赤道一圈）</source>
+        <translation>Total cursor distance reaches 40,075 km (one lap around the equator)</translation>
+    </message>
+    <message>
+        <source>登月宇航员</source>
+        <translation>Moonwalker</translation>
+    </message>
+    <message>
+        <source>累计鼠标移动距离达到 38 万 km（地月距离）</source>
+        <translation>Total cursor distance reaches 380,000 km (Earth–Moon distance)</translation>
+    </message>
+    <message>
+        <source>千键斩</source>
+        <translation>Thousand Keys</translation>
+    </message>
+    <message>
+        <source>累计键盘敲击达到 1000 次</source>
+        <translation>Total keystrokes reach 1,000</translation>
+    </message>
+    <message>
+        <source>键盘钢琴家</source>
+        <translation>Keyboard Pianist</translation>
+    </message>
+    <message>
+        <source>累计键盘敲击达到 10 万次</source>
+        <translation>Total keystrokes reach 100,000</translation>
+    </message>
+    <message>
+        <source>百万敲击</source>
+        <translation>Million Taps</translation>
+    </message>
+    <message>
+        <source>累计键盘敲击达到 100 万次</source>
+        <translation>Total keystrokes reach 1,000,000</translation>
+    </message>
+    <message>
+        <source>致爱丽丝</source>
+        <translation>Für Elise</translation>
+    </message>
+    <message>
+        <source>累计键盘敲击达到 3 万次（约《致爱丽丝》100 遍）</source>
+        <translation>Total keystrokes reach 30,000 (about 100 renditions of Für Elise)</translation>
+    </message>
+    <message>
+        <source>单日万米</source>
+        <translation>10K in a Day</translation>
+    </message>
+    <message>
+        <source>单日鼠标移动距离达到 10 km</source>
+        <translation>Daily cursor distance reaches 10 km</translation>
+    </message>
+    <message>
+        <source>人肉打字机</source>
+        <translation>Human Typewriter</translation>
+    </message>
+    <message>
+        <source>单日键盘敲击达到 2 万次</source>
+        <translation>Daily keystrokes reach 20,000</translation>
+    </message>
+    <message>
+        <source>深夜码字人</source>
+        <translation>Midnight Coder</translation>
+    </message>
+    <message>
+        <source>23:00–5:00 期间单日敲击达到 5000 次</source>
+        <translation>5,000 keystrokes between 23:00 and 5:00 in a single day</translation>
+    </message>
+    <message>
+        <source>七日不辍</source>
+        <translation>Seven-Day Streak</translation>
+    </message>
+    <message>
+        <source>连续 7 天保持记录</source>
+        <translation>Keep logging for 7 consecutive days</translation>
+    </message>
+</context>
+<context>
+    <name>AchievementDialog</name>
+    <message>
+        <source>成就达成</source>
+        <translation>Achievement Unlocked</translation>
+    </message>
+    <message>
+        <source>黄金</source>
+        <translation>Gold</translation>
+    </message>
+    <message>
+        <source>白银</source>
+        <translation>Silver</translation>
+    </message>
+    <message>
+        <source>青铜</source>
+        <translation>Bronze</translation>
+    </message>
+    <message>
+        <source>太棒了</source>
+        <translation>Awesome</translation>
+    </message>
+</context>
+<context>
+    <name>AchievementsDialog</name>
+    <message>
+        <source>我的成就</source>
+        <translation>My Achievements</translation>
+    </message>
+    <message>
+        <source>已于 %1 达成</source>
+        <translation>Unlocked on %1</translation>
+    </message>
+    <message>
+        <source>继续使用以解锁</source>
+        <translation>Keep using CursorFlow to unlock</translation>
+    </message>
+    <message>
+        <source>关闭</source>
+        <translation>Close</translation>
+    </message>
+</context>
+<context>
     <name>CloseAskDialog</name>
     <message>
         <source>关闭 CursorFlow</source>
@@ -61,6 +202,33 @@
     <message>
         <source>仅统计次数，不记录内容；数据仅保存在本地</source>
         <translation>Counts only — no content is recorded; data stays on this device</translation>
+    </message>
+</context>
+<context>
+    <name>FunFactsController</name>
+    <message>
+        <source>今天节奏轻松：鼠标游荡了 %1，键盘敲了 %2 次，记得常起来走动。</source>
+        <translation>A light day: the cursor wandered %1 with %2 keystrokes — remember to stretch.</translation>
+    </message>
+    <message>
+        <source>今日手部运动量不大——鼠标路程 %1、敲击 %2 次，适合活动一下手腕。</source>
+        <translation>Not much hand movement today — %1 of cursor travel and %2 keystrokes; a good time to flex your wrists.</translation>
+    </message>
+    <message>
+        <source>今天你的鼠标游荡了 %1，键盘敲击 %2 次，节奏刚刚好。</source>
+        <translation>Your cursor wandered %1 today with %2 keystrokes — a steady pace.</translation>
+    </message>
+    <message>
+        <source>今日工作强度适中：鼠标奔走 %1、键盘 %2 次，继续保持。</source>
+        <translation>Moderate workload today: %1 of cursor travel and %2 keystrokes. Keep it up.</translation>
+    </message>
+    <message>
+        <source>今天高强度输出：鼠标奔袭 %1、键盘 %2 次，别忘了让双手休息。</source>
+        <translation>High-intensity day: %1 of cursor travel and %2 keystrokes — give your hands a break.</translation>
+    </message>
+    <message>
+        <source>今日爆肝预警——鼠标 %1、按键 %2 次，起来喝口水休息一下吧。</source>
+        <translation>Grinding alert — %1 of cursor travel and %2 keystrokes; time for a water break.</translation>
     </message>
 </context>
 <context>
@@ -409,6 +577,58 @@
     <message>
         <source>退出程序</source>
         <translation>Quit app</translation>
+    </message>
+    <message>
+        <source>趣味数据</source>
+        <translation>Fun Facts</translation>
+    </message>
+    <message>
+        <source>类比风格</source>
+        <translation>Analogy Style</translation>
+    </message>
+    <message>
+        <source>趣味换算与每日简报的文案风格</source>
+        <translation>Tone of fun-fact comparisons and the daily brief</translation>
+    </message>
+    <message>
+        <source>运动系</source>
+        <translation>Sporty</translation>
+    </message>
+    <message>
+        <source>文艺系</source>
+        <translation>Artistic</translation>
+    </message>
+    <message>
+        <source>极客系</source>
+        <translation>Geeky</translation>
+    </message>
+    <message>
+        <source>自定义参照物</source>
+        <translation>Custom Reference</translation>
+    </message>
+    <message>
+        <source>用它替换软件内置参照物</source>
+        <translation>Replaces built-in references in comparisons</translation>
+    </message>
+    <message>
+        <source>如：客厅（留空禁用）</source>
+        <translation>e.g. Living room (empty to disable)</translation>
+    </message>
+    <message>
+        <source>参照物长度（米）</source>
+        <translation>Reference Length (m)</translation>
+    </message>
+    <message>
+        <source>成就</source>
+        <translation>Achievements</translation>
+    </message>
+    <message>
+        <source>累计数据达到阈值时自动解锁</source>
+        <translation>Unlocked automatically when totals reach thresholds</translation>
+    </message>
+    <message>
+        <source>查看成就</source>
+        <translation>View Achievements</translation>
     </message>
 </context>
 <context>

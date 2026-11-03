@@ -66,6 +66,40 @@ Item {
             }
         }
 
+        // 每日简报条（M5 7.2，PRD 3.8.4，07 号文档 §4）：当日工作强度文案，
+        // 由 FunFactsController 生成（当日确定性，不重复抖动）；无活动时隐藏
+        Rectangle {
+            visible: funFacts.todayBrief !== ""
+            width: parent.width
+            height: briefLabel.implicitHeight + 22
+            radius: 8
+            color: theme.surface
+
+            Row {
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                anchors.leftMargin: 16
+                spacing: 10
+
+                Rectangle {
+                    width: 3
+                    height: briefLabel.implicitHeight
+                    radius: 1.5
+                    color: theme.secondary
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+                Label {
+                    id: briefLabel
+                    width: 560
+                    text: funFacts.todayBrief
+                    color: theme.textDim
+                    font.pixelSize: 12
+                    wrapMode: Text.WordWrap
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+        }
+
         // 采集失败横幅（04 号文档 §6：原因 + 引导，如 macOS 辅助功能授权路径）
         Rectangle {
             id: errorBanner
@@ -125,6 +159,40 @@ Item {
                 mode: "minutes"
                 value: stats.todayActiveMinutes
                 accent: theme.primary
+            }
+        }
+
+        // 趣味换算卡片（M5 7.2，PRD 3.8.1，07 号文档 §2）：类比文案随
+        // statsSaved 刷新；数据为 0 时隐藏。放大今日分布时同步收起（任务 6.5）。
+        Rectangle {
+            visible: funFacts.todayFunFact !== "" && !root.expanded
+            width: parent.width
+            height: factLabel.implicitHeight + 20
+            radius: 12
+            color: theme.surface
+            border.color: theme.border
+
+            Row {
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                anchors.leftMargin: 16
+                spacing: 10
+
+                Image {
+                    source: "qrc:/qml/icons/CursorFlow.png"
+                    sourceSize: Qt.size(16, 16)
+                    anchors.verticalCenter: parent.verticalCenter
+                    opacity: 0.8
+                }
+                Label {
+                    id: factLabel
+                    width: 540
+                    text: funFacts.todayFunFact
+                    color: theme.text
+                    font.pixelSize: 12
+                    wrapMode: Text.WordWrap
+                    anchors.verticalCenter: parent.verticalCenter
+                }
             }
         }
 

@@ -248,4 +248,9 @@ ApplicationWindow {
         onQuitRequested: Qt.quit()
         onMinimizeRequested: root.visible = false
     }
+
+    // 成就达成弹窗（M5 7.3）：全局唯一实例，AchievementController.unlocked 驱动
+    AchievementDialog {
+        id: achievementDialog
+    }
 }

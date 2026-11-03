@@ -27,6 +27,13 @@ class AppSettings : public QObject
     Q_PROPERTY(bool onboarded READ onboarded WRITE setOnboarded NOTIFY onboardedChanged)
     // 关闭窗口行为（任务 6.4，M4）：0=每次询问（默认）1=最小化到托盘 2=退出程序
     Q_PROPERTY(int closeAction READ closeAction WRITE setCloseAction NOTIFY closeActionChanged)
+    // 趣味数据（M5 7.5，07 号文档 §5）：类比风格 0=运动系 1=文艺系 2=极客系
+    Q_PROPERTY(int funStyle READ funStyle WRITE setFunStyle NOTIFY funStyleChanged)
+    // 自定义参照物：名称为空表示禁用；量值单位为米（距离类参照）
+    Q_PROPERTY(QString customRefName READ customRefName WRITE setCustomRefName
+                   NOTIFY customRefChanged)
+    Q_PROPERTY(double customRefValue READ customRefValue WRITE setCustomRefValue
+                   NOTIFY customRefChanged)
     // 软件信息（任务 6.1，M4）：编译期注入，运行期不变（CONSTANT）
     Q_PROPERTY(QString appVersion READ appVersion CONSTANT)
     Q_PROPERTY(QString qtVersion READ qtVersion CONSTANT)
@@ -72,6 +79,14 @@ public:
     int closeAction() const { return closeAction_; }
     void setCloseAction(int action);
 
+    int funStyle() const { return funStyle_; }
+    void setFunStyle(int style);
+
+    QString customRefName() const { return customRefName_; }
+    void setCustomRefName(const QString& name);
+    double customRefValue() const { return customRefValue_; }
+    void setCustomRefValue(double value);
+
     // 软件信息（任务 6.1，M4）：版本与 project(VERSION)/安装包同源（version.h）
     QString appVersion() const;
     QString qtVersion() const;
@@ -87,6 +102,8 @@ signals:
     void calibrationChanged();
     void onboardedChanged(bool done);
     void closeActionChanged(int action);
+    void funStyleChanged(int style);
+    void customRefChanged();
 
 private:
     DataManager* dataManager_;
@@ -101,4 +118,7 @@ private:
     int calibrationPpi_ = 96; // 未校准默认 96 DPI 估算（06 号文档 §6 风险应对）
     bool onboarded_ = false;
     int closeAction_ = 0; // 0=每次询问（6.4）
+    int funStyle_ = 0;    // 0=运动系 1=文艺系 2=极客系（M5 7.5）
+    QString customRefName_;
+    double customRefValue_ = 0.0;
 };

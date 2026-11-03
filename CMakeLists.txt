@@ -54,6 +54,10 @@ add_library(cursorflow_core STATIC
     src/app/Logger.cpp
     src/app/Theme.h
     src/app/Theme.cpp
+    src/app/FunFactsController.h
+    src/app/FunFactsController.cpp
+    src/app/AchievementController.h
+    src/app/AchievementController.cpp
     src/export/Exporter.h
     src/export/Exporter.cpp
     src/export/ExporterController.h

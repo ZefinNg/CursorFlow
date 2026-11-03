@@ -4,6 +4,7 @@
 #include <QList>
 #include <QSqlDatabase>
 #include <QString>
+#include <QVariantMap>
 
 // 当日聚合统计（对应 daily_stats 表）
 struct DailyStats {
@@ -62,6 +63,13 @@ public:
 
     // 删除早于 cutoff 的日/小时数据，返回删除的 daily 行数，失败返回 -1（03 号文档 §3.3）。
     int purgeBefore(const QDate& cutoff);
+
+    // 成就（M5 7.3，07 号文档 §3.2）：INSERT OR IGNORE 幂等写入，返回是否"新"解锁
+    // （false = 已存在或写入失败，不重复弹窗）。
+    bool recordAchievement(const QString& id, const QString& unlockedAtIso);
+
+    // 已解锁成就：id → 达成时间（ISO 字符串）
+    QVariantMap achievementUnlocks() const;
 
     int schemaVersion() const;
 

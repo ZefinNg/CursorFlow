@@ -125,6 +125,10 @@ bool Database::createSchema()
         QStringLiteral("CREATE TABLE IF NOT EXISTS meta ("
                        "key TEXT PRIMARY KEY, "
                        "value TEXT NOT NULL)"),
+        // 成就表（M5 7.3，07 号文档 §3.2）：只记已达成 id 与时间，定义在代码内维护
+        QStringLiteral("CREATE TABLE IF NOT EXISTS achievements ("
+                       "id TEXT PRIMARY KEY, "
+                       "unlocked_at TEXT NOT NULL)"),
         QStringLiteral("INSERT OR IGNORE INTO meta(key, value) VALUES('schema_version', '%1')")
             .arg(kSchemaVersion),
         QStringLiteral("INSERT OR IGNORE INTO meta(key, value) VALUES('first_run_date', '%1')")
@@ -317,6 +321,34 @@ int Database::purgeBefore(const QDate& cutoff)
         return -1;
     }
     return removed;
+}
+
+bool Database::recordAchievement(const QString& id, const QString& unlockedAtIso)
+{
+    QSqlQuery query(db_);
+    query.prepare(
+        QStringLiteral("INSERT OR IGNORE INTO achievements(id, unlocked_at) VALUES(?, ?)"));
+    query.addBindValue(id);
+    query.addBindValue(unlockedAtIso);
+    if (!query.exec()) {
+        qWarning() << "Database: record achievement failed:" << query.lastError().text();
+        return false;
+    }
+    return query.numRowsAffected() > 0; // 0 = 已存在（幂等，不重复弹窗，07 号文档 §3.2）
+}
+
+QVariantMap Database::achievementUnlocks() const
+{
+    QVariantMap result;
+    QSqlQuery query(db_);
+    if (!query.exec(QStringLiteral("SELECT id, unlocked_at FROM achievements"))) {
+        qWarning() << "Database: query achievements failed:" << query.lastError().text();
+        return result;
+    }
+    while (query.next()) {
+        result.insert(query.value(0).toString(), query.value(1).toString());
+    }
+    return result;
 }
 
 int Database::schemaVersion() const

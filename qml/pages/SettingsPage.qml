@@ -2,6 +2,8 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Window 2.15
 
+import "../components"
+
 // 设置页（04 号文档 §2.3）：通用组 + 显示组 + 校准组（4.4）。
 // 导出组（5.2）后续任务接入。变更即写 QSettings。
 Item {
@@ -531,6 +533,159 @@ Item {
                     exportStatus.text = message
                     exportStatus.color = "#F0B429"
                 }
+            }
+
+            // ---- 趣味数据（M5 7.5，PRD 3.8.3；07 号文档 §5）----
+            Label {
+                text: qsTr("趣味数据")
+                color: theme.textDim
+                font.pixelSize: 12
+                font.letterSpacing: 1
+            }
+            Rectangle {
+                width: parent.width
+                height: funCol.implicitHeight + 24
+                radius: 12
+                color: theme.surface
+                border.color: theme.border
+
+                Column {
+                    id: funCol
+                    x: 20
+                    y: 12
+                    width: parent.width - 40
+
+                    Item {
+                        width: parent.width
+                        height: 52
+                        Label {
+                            text: qsTr("类比风格")
+                            color: theme.text
+                            font.pixelSize: 13
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                        Label {
+                            text: qsTr("趣味换算与每日简报的文案风格")
+                            color: theme.textDim
+                            font.pixelSize: 11
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.right: styleBox.left
+                            anchors.rightMargin: 12
+                        }
+                        ComboBox {
+                            id: styleBox
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.right: parent.right
+                            width: 140
+                            model: [qsTr("运动系"), qsTr("文艺系"), qsTr("极客系")]
+                            currentIndex: Math.max(0, Math.min(2, settings.funStyle))
+                            onActivated: settings.funStyle = currentIndex
+                        }
+                    }
+
+                    Rectangle {
+                        width: parent.width
+                        height: 1
+                        color: theme.border
+                    }
+
+                    Item {
+                        width: parent.width
+                        height: 52
+                        Label {
+                            text: qsTr("自定义参照物")
+                            color: theme.text
+                            font.pixelSize: 13
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                        Label {
+                            text: qsTr("用它替换软件内置参照物")
+                            color: theme.textDim
+                            font.pixelSize: 11
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.right: refNameField.left
+                            anchors.rightMargin: 12
+                        }
+                        TextField {
+                            id: refNameField
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.right: parent.right
+                            width: 180
+                            placeholderText: qsTr("如：客厅（留空禁用）")
+                            text: settings.customRefName
+                            font.pixelSize: 12
+                            onEditingFinished: settings.customRefName = text.trim()
+                        }
+                    }
+
+                    Rectangle {
+                        width: parent.width
+                        height: 1
+                        color: theme.border
+                    }
+
+                    Item {
+                        width: parent.width
+                        height: 52
+                        Label {
+                            text: qsTr("参照物长度（米）")
+                            color: theme.text
+                            font.pixelSize: 13
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                        TextField {
+                            id: refValueField
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.right: parent.right
+                            width: 140
+                            font.pixelSize: 12
+                            validator: DoubleValidator {
+                                bottom: 0.1
+                                decimals: 2
+                                notation: DoubleValidator.StandardNotation
+                            }
+                            text: settings.customRefValue > 0 ? String(settings.customRefValue) : ""
+                            onEditingFinished: settings.customRefValue = parseFloat(text) || 0
+                        }
+                    }
+
+                    Rectangle {
+                        width: parent.width
+                        height: 1
+                        color: theme.border
+                    }
+
+                    Item {
+                        width: parent.width
+                        height: 56
+                        Label {
+                            text: qsTr("成就")
+                            color: theme.text
+                            font.pixelSize: 13
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                        Label {
+                            text: qsTr("累计数据达到阈值时自动解锁")
+                            color: theme.textDim
+                            font.pixelSize: 11
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.right: viewAchievementsBtn.left
+                            anchors.rightMargin: 12
+                        }
+                        Button {
+                            id: viewAchievementsBtn
+                            text: qsTr("查看成就")
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.right: parent.right
+                            onClicked: achievementsDialog.open()
+                        }
+                    }
+                }
+            }
+
+            // 成就列表弹窗（M5 7.5，04 号文档 §2.6）
+            AchievementsDialog {
+                id: achievementsDialog
             }
 
             // ---- 关于（任务 6.1，M4；04 号文档 §2.3）：只读软件信息 ----

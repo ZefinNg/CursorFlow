@@ -1,4 +1,6 @@
 #include "app/AppSettings.h"
+#include "app/AchievementController.h"
+#include "app/FunFactsController.h"
 #include "app/HistoryController.h"
 #include "app/Logger.h"
 #include "app/PrivacyGate.h"
@@ -216,6 +218,11 @@ int main(int argc, char* argv[])
     engine.rootContext()->setContextProperty(QStringLiteral("theme"), &appTheme);
     engine.rootContext()->setContextProperty(QStringLiteral("history"), &historyController);
     engine.rootContext()->setContextProperty(QStringLiteral("exporter"), &exporterController);
+    // 趣味数据（M5 7.1/7.3，07 号文档）：类比引擎与成就系统
+    FunFactsController funFactsController(&appSettings, &dataManager);
+    AchievementController achievementController(&dataManager, &database);
+    engine.rootContext()->setContextProperty(QStringLiteral("funFacts"), &funFactsController);
+    engine.rootContext()->setContextProperty(QStringLiteral("achievements"), &achievementController);
     engine.load(QUrl(QStringLiteral("qrc:/qml/Main.qml")));
     if (engine.rootObjects().isEmpty()) {
         qCritical() << "QML 主窗口加载失败，应用退出（QML 错误见上方输出）";
