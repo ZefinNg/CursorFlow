@@ -1,10 +1,11 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import QtQuick.Window 2.15
 
 import "components"
 import "pages"
 
-// 主窗口（04 号文档 §2）：Sidebar + StackView 三页面。
+// 主窗口（04 号文档 §2）：TitleBar + Sidebar + StackView 三页面。
 // stats / settings / theme 由 C++ setContextProperty 注入（04 号文档 §1）。
 ApplicationWindow {
     id: root
@@ -18,6 +19,21 @@ ApplicationWindow {
     color: theme.bg
     font.family: theme.fontFamily
     font.pixelSize: 13
+
+    // 自定义标题栏（任务 6.6，M4；04 号文档 §2.5）：移除系统标题栏，
+    // 窗口控制/拖拽/缩放由 TitleBar.qml 与下方边缘热点区实现
+    flags: Qt.Window | Qt.FramelessWindowHint
+
+    // 最大化/还原（标题栏按钮与双击共用）
+    function toggleMaximized() {
+        if (visibility === Window.Maximized) {
+            showNormal()
+        } else {
+            showMaximized()
+        }
+    }
+
+    readonly property bool resizable: visibility !== Window.Maximized
 
     // Fusion 控件深色化（04 号文档 §8 深色基底）
     palette {
@@ -58,22 +74,110 @@ ApplicationWindow {
         stack.replace(comps[index], {}, StackView.Immediate)
     }
 
-    Row {
+    // 顶部标题栏 + 导航/内容区（04 号文档 §2.5）
+    Column {
         anchors.fill: parent
         spacing: 0
 
-        Sidebar {
-            id: sidebar
-            height: parent.height
-            onNavigate: root.openPage(index)
+        TitleBar {
+            id: titleBar
+            width: parent.width
+            window: root
         }
 
-        StackView {
-            id: stack
-            width: parent.width - sidebar.width
-            height: parent.height
-            initialItem: dashboardComp
+        Row {
+            width: parent.width
+            height: parent.height - titleBar.height
+            spacing: 0
+
+            Sidebar {
+                id: sidebar
+                height: parent.height
+                onNavigate: root.openPage(index)
+            }
+
+            StackView {
+                id: stack
+                width: parent.width - sidebar.width
+                height: parent.height
+                initialItem: dashboardComp
+            }
         }
+    }
+
+    // ---- 无边框窗口边缘缩放热点（04 号文档 §2.5）：四边 6px + 四角 12px，
+    //      startSystemResize 交由系统处理；最大化时禁用 ----
+    MouseArea {
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width: 6
+        enabled: root.resizable
+        cursorShape: Qt.SizeHorCursor
+        onPressed: root.startSystemResize(Qt.LeftEdge)
+    }
+    MouseArea {
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width: 6
+        enabled: root.resizable
+        cursorShape: Qt.SizeHorCursor
+        onPressed: root.startSystemResize(Qt.RightEdge)
+    }
+    MouseArea {
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: 6
+        enabled: root.resizable
+        cursorShape: Qt.SizeVerCursor
+        onPressed: root.startSystemResize(Qt.TopEdge)
+    }
+    MouseArea {
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: 6
+        enabled: root.resizable
+        cursorShape: Qt.SizeVerCursor
+        onPressed: root.startSystemResize(Qt.BottomEdge)
+    }
+    MouseArea {
+        anchors.top: parent.top
+        anchors.left: parent.left
+        width: 14
+        height: 14
+        enabled: root.resizable
+        cursorShape: Qt.SizeFDiagCursor
+        onPressed: root.startSystemResize(Qt.TopEdge | Qt.LeftEdge)
+    }
+    MouseArea {
+        anchors.top: parent.top
+        anchors.right: parent.right
+        width: 14
+        height: 14
+        enabled: root.resizable
+        cursorShape: Qt.SizeBDiagCursor
+        onPressed: root.startSystemResize(Qt.TopEdge | Qt.RightEdge)
+    }
+    MouseArea {
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        width: 14
+        height: 14
+        enabled: root.resizable
+        cursorShape: Qt.SizeBDiagCursor
+        onPressed: root.startSystemResize(Qt.BottomEdge | Qt.LeftEdge)
+    }
+    MouseArea {
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        width: 14
+        height: 14
+        enabled: root.resizable
+        cursorShape: Qt.SizeFDiagCursor
+        onPressed: root.startSystemResize(Qt.BottomEdge | Qt.RightEdge)
     }
 
     Component {

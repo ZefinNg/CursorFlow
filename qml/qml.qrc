@@ -4,6 +4,7 @@
         <file alias="icons/CursorFlow.png">../assets/image/CursorFlow_256.png</file>
         <file>components/PrivacyDialog.qml</file>
         <file>components/Sidebar.qml</file>
+        <file>components/TitleBar.qml</file>
         <file>components/StatCard.qml</file>
         <file>components/TrendChart.qml</file>
         <file>components/HeatmapGrid.qml</file>
