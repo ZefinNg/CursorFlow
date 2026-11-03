@@ -327,7 +327,7 @@ Item {
                             to: 200
                             stepSize: 1 // Qt5 SpinBox 仅支持整数；英寸取整对 PPI 精度影响可忽略
                             value: settings.calibrationDiagonalInch > 0
-                                       ? Math.round(settings.calibrationDiagonalInch) : 24
+                                   ? Math.round(settings.calibrationDiagonalInch) : 24
                             onValueModified: calibCol.applyCalibration()
                         }
                     }
@@ -399,10 +399,10 @@ Item {
                         Label {
                             // 校准前按 96 DPI 估算并标注（06 号文档 §6 风险应对）
                             text: settings.calibrationDiagonalInch > 0
-                                      ? settings.calibrationPpi + " PPI"
-                                      : qsTr("96 PPI（估算值）")
+                                  ? settings.calibrationPpi + " PPI"
+                                  : qsTr("96 PPI（估算值）")
                             color: settings.calibrationDiagonalInch > 0
-                                       ? theme.text : theme.textDim
+                                   ? theme.text : theme.textDim
                             font.pixelSize: 13
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.right: parent.right
@@ -542,45 +542,61 @@ Item {
             }
             Rectangle {
                 width: parent.width
-                height: aboutCol.implicitHeight + 24
+                height: Math.max(logoImg.height, aboutCol.implicitHeight) + 24
                 radius: 12
                 color: theme.surface
                 border.color: theme.border
 
-                Column {
-                    id: aboutCol
+                Row {
                     x: 20
                     y: 12
                     width: parent.width - 40
-                    spacing: 8
+                    spacing: 14
 
-                    // 版本号与 project(VERSION)/安装包同源（CMake version.h 注入）
-                    Label {
-                        text: "CursorFlow v" + settings.appVersion
-                        color: theme.text
-                        font.pixelSize: 14
-                        font.weight: Font.DemiBold
+                    Column {
+                        id: aboutCol
+                        width: parent.width - logoImg.width - parent.spacing
+                        spacing: 8
+
+                        // 版本号与 project(VERSION)/安装包同源（CMake version.h 注入）
+                        Label {
+                            text: "CursorFlow v" + settings.appVersion
+                            color: theme.text
+                            font.pixelSize: 14
+                            font.weight: Font.DemiBold
+                        }
+                        Label {
+                            text: qsTr("基于 Qt %1 · %2")
+                            .arg(settings.qtVersion).arg(settings.buildInfo)
+                            color: theme.textDim
+                            font.pixelSize: 12
+                        }
+                        Label {
+                            width: parent.width
+                            wrapMode: Text.WordWrap
+                            text: qsTr("开源许可：本应用基于 MIT 许可证发布；Qt 框架在 LGPL v3 下使用。数据仅保存在本机，不联网。")
+                            color: theme.textDim
+                            font.pixelSize: 12
+                        }
+                        Label {
+                            width: parent.width
+                            wrapMode: Text.WordWrap
+                            text: qsTr("项目主页：<a href=\"https://github.com/ZefinNg/CursorFlow\">github.com/ZefinNg/CursorFlow</a>")
+                            color: theme.textDim
+                            font.pixelSize: 12
+                            onLinkActivated: function (link) { Qt.openUrlExternally(link) }
+                        }
                     }
-                    Label {
-                        text: qsTr("基于 Qt %1 · %2")
-                                  .arg(settings.qtVersion).arg(settings.buildInfo)
-                        color: theme.textDim
-                        font.pixelSize: 12
-                    }
-                    Label {
-                        width: parent.width
-                        wrapMode: Text.WordWrap
-                        text: qsTr("开源许可：本应用基于 MIT 许可证发布；Qt 框架在 LGPL v3 下使用。数据仅保存在本机，不联网。")
-                        color: theme.textDim
-                        font.pixelSize: 12
-                    }
-                    Label {
-                        width: parent.width
-                        wrapMode: Text.WordWrap
-                        text: qsTr("项目主页：<a href=\"https://github.com/ZefinNg/CursorFlow\">github.com/ZefinNg/CursorFlow</a>")
-                        color: theme.textDim
-                        font.pixelSize: 12
-                        onLinkActivated: function (link) { Qt.openUrlExternally(link) }
+
+                    // 软件Logo（assets/image 重采样素材，经 qrc 内联）
+                    Image {
+                        id: logoImg
+                        source: "qrc:/qml/icons/CursorFlow.png"
+                        width: 72
+                        height: 72
+                        fillMode: Image.PreserveAspectFit
+                        smooth: true
+                        anchors.verticalCenter: aboutCol.verticalCenter
                     }
                 }
             }
