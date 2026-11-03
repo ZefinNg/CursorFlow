@@ -38,7 +38,7 @@ Rectangle {
 
     function format(v) {
         if (root.mode === "distance") {
-            return v < 1000 ? Math.round(v) + " m"
+            return v < 1000 ? v.toFixed(2) + " m"
                             : (v / 1000).toFixed(2) + " km"
         }
         if (root.mode === "minutes") {
