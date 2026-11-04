@@ -283,6 +283,13 @@ ApplicationWindow {
                    && settings.showFloatingOverlay && privacy.accepted
         if (want && floatingOverlayObj === null) {
             floatingOverlayObj = floatingOverlayComp.createObject(null)
+            // 悬浮窗"打开主窗口"按钮（M6 8.2 增补）：恢复窗口并前置，
+            // visibility 变化经 onVisibilityChanged → syncOverlay 自动隐藏悬浮窗
+            floatingOverlayObj.showMainRequested.connect(function () {
+                root.showNormal()
+                root.raise()
+                root.requestActivate()
+            })
         }
         if (floatingOverlayObj !== null) {
             floatingOverlayObj.visible = want

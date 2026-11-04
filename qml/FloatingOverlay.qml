@@ -9,6 +9,9 @@ import QtQuick.Window 2.15
 Window {
     id: overlay
 
+    // 点击"打开主窗口"按钮（M6 8.2 增补）→ Main.qml 激活主窗口
+    signal showMainRequested()
+
     width: 220
     height: 132
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
@@ -117,6 +120,38 @@ Window {
                     font.pixelSize: 11
                     font.letterSpacing: 1
                     anchors.verticalCenter: parent.verticalCenter
+                }
+
+                // 打开主窗口按钮（M6 8.2 增补）：点击唤起主窗口，悬浮窗随显隐联动自动隐藏
+                Item {
+                    id: showMainBtn
+                    width: 18
+                    height: 18
+                    anchors.right: parent.right
+                    anchors.rightMargin: 24
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    Rectangle {
+                        anchors.fill: parent
+                        radius: 9
+                        color: showMainArea.containsMouse ? theme.border : "transparent"
+                    }
+                    Text {
+                        anchors.centerIn: parent
+                        text: "\u29C9" // ⧉ 重叠窗口
+                        color: theme.textDim
+                        font.pixelSize: 12
+                    }
+                    MouseArea {
+                        id: showMainArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: overlay.showMainRequested()
+                    }
+                    ToolTip.visible: showMainArea.containsMouse
+                    ToolTip.text: qsTr("打开主窗口")
+                    ToolTip.delay: 400
                 }
 
                 // 关闭按钮（记住选择，PRD 3.9）：设置页开关可重新开启

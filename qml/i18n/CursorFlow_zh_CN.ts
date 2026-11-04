@@ -245,6 +245,10 @@
         <source>活跃时长</source>
         <translation>活跃时长</translation>
     </message>
+    <message>
+        <source>打开主窗口</source>
+        <translation>打开主窗口</translation>
+    </message>
 </context>
 <context>
     <name>FunFactsController</name>
