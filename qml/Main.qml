@@ -253,4 +253,37 @@ ApplicationWindow {
     AchievementDialog {
         id: achievementDialog
     }
+
+    // 悬浮窗今日概览（M6 8.1/8.2，PRD 3.9，04 号文档 §2.7）：主窗口最小化或
+    // 隐藏到托盘时显示；开关与引导完成状态联动（隐私红线：onboarded 前不显示）。
+    // 关键实现约束：Window 不能静态嵌套声明在 ApplicationWindow 内再延迟 show——
+    // 主窗口隐藏后静态子窗口无论 transientParent 是否 null 都无法 show（Qt 5.15
+    // 实测，overlay_repro1-10）；必须 Component.createObject(null) 动态创建为
+    // 完全独立窗口，随后可见性全部命令式管理。
+    property var floatingOverlayObj: null
+
+    Component {
+        id: floatingOverlayComp
+        FloatingOverlay { }
+    }
+
+    onVisibleChanged: syncOverlay()
+    onVisibilityChanged: syncOverlay()
+
+    function syncOverlay() {
+        var want = (root.visibility === Window.Minimized || !root.visible)
+                   && settings.showFloatingOverlay && privacy.accepted
+        if (want && floatingOverlayObj === null) {
+            floatingOverlayObj = floatingOverlayComp.createObject(null)
+        }
+        if (floatingOverlayObj !== null) {
+            floatingOverlayObj.visible = want
+        }
+    }
+
+    Connections {
+        target: settings
+        // 设置页开关即时生效
+        function onShowFloatingOverlayChanged() { syncOverlay() }
+    }
 }

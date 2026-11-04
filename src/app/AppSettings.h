@@ -34,6 +34,11 @@ class AppSettings : public QObject
                    NOTIFY customRefChanged)
     Q_PROPERTY(double customRefValue READ customRefValue WRITE setCustomRefValue
                    NOTIFY customRefChanged)
+    // 悬浮窗今日概览（M6 8.2，PRD 3.9）：最小化/隐藏时显示；位置 -1 表示首次默认
+    Q_PROPERTY(bool showFloatingOverlay READ showFloatingOverlay WRITE setShowFloatingOverlay
+                   NOTIFY showFloatingOverlayChanged)
+    Q_PROPERTY(int overlayX READ overlayX WRITE setOverlayX NOTIFY overlayPosChanged)
+    Q_PROPERTY(int overlayY READ overlayY WRITE setOverlayY NOTIFY overlayPosChanged)
     // 软件信息（任务 6.1，M4）：编译期注入，运行期不变（CONSTANT）
     Q_PROPERTY(QString appVersion READ appVersion CONSTANT)
     Q_PROPERTY(QString qtVersion READ qtVersion CONSTANT)
@@ -87,6 +92,13 @@ public:
     double customRefValue() const { return customRefValue_; }
     void setCustomRefValue(double value);
 
+    bool showFloatingOverlay() const { return showFloatingOverlay_; }
+    void setShowFloatingOverlay(bool show);
+    int overlayX() const { return overlayX_; }
+    void setOverlayX(int x);
+    int overlayY() const { return overlayY_; }
+    void setOverlayY(int y);
+
     // 软件信息（任务 6.1，M4）：版本与 project(VERSION)/安装包同源（version.h）
     QString appVersion() const;
     QString qtVersion() const;
@@ -104,6 +116,8 @@ signals:
     void closeActionChanged(int action);
     void funStyleChanged(int style);
     void customRefChanged();
+    void showFloatingOverlayChanged(bool show);
+    void overlayPosChanged();
 
 private:
     DataManager* dataManager_;
@@ -121,4 +135,7 @@ private:
     int funStyle_ = 0;    // 0=运动系 1=文艺系 2=极客系（M5 7.5）
     QString customRefName_;
     double customRefValue_ = 0.0;
+    bool showFloatingOverlay_ = true; // M6 8.2，PRD 3.9 默认开启
+    int overlayX_ = -1;   // -1 = 首次默认屏幕右下角
+    int overlayY_ = -1;
 };

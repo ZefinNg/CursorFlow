@@ -23,5 +23,6 @@
         <file alias="funfacts.json">../assets/funfacts.json</file>
         <file>components/AchievementDialog.qml</file>
         <file>components/AchievementsDialog.qml</file>
+        <file>FloatingOverlay.qml</file>
     </qresource>
 </RCC>

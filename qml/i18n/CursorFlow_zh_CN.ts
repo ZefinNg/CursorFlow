@@ -205,6 +205,29 @@
     </message>
 </context>
 <context>
+    <name>FloatingOverlay</name>
+    <message>
+        <source>CursorFlow 今日概览</source>
+        <translation>CursorFlow 今日概览</translation>
+    </message>
+    <message>
+        <source>今日概览</source>
+        <translation>今日概览</translation>
+    </message>
+    <message>
+        <source>鼠标距离</source>
+        <translation>鼠标距离</translation>
+    </message>
+    <message>
+        <source>键盘次数</source>
+        <translation>键盘次数</translation>
+    </message>
+    <message>
+        <source>活跃时长</source>
+        <translation>活跃时长</translation>
+    </message>
+</context>
+<context>
     <name>FunFactsController</name>
     <message>
         <source>今天节奏轻松：鼠标游荡了 %1，键盘敲了 %2 次，记得常起来走动。</source>
@@ -629,6 +652,14 @@
     <message>
         <source>查看成就</source>
         <translation>查看成就</translation>
+    </message>
+    <message>
+        <source>最小化时显示悬浮窗</source>
+        <translation>最小化时显示悬浮窗</translation>
+    </message>
+    <message>
+        <source>半透明小窗展示今日概览，可拖拽</source>
+        <translation>半透明小窗展示今日概览，可拖拽</translation>
     </message>
 </context>
 <context>

@@ -254,6 +254,39 @@ Item {
                         color: theme.border
                     }
 
+                    // 最小化时显示悬浮窗（M6 8.2，PRD 3.9）：关闭按钮与开关共用此设置
+                    Rectangle {
+                        width: parent.width
+                        height: 1
+                        color: theme.border
+                    }
+
+                    Item {
+                        width: parent.width
+                        height: 52
+                        Label {
+                            text: qsTr("最小化时显示悬浮窗")
+                            color: theme.text
+                            font.pixelSize: 13
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                        Label {
+                            text: qsTr("半透明小窗展示今日概览，可拖拽")
+                            color: theme.textDim
+                            font.pixelSize: 11
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.right: overlaySwitch.left
+                            anchors.rightMargin: 12
+                        }
+                        Switch {
+                            id: overlaySwitch
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.right: parent.right
+                            checked: settings.showFloatingOverlay
+                            onToggled: settings.showFloatingOverlay = checked
+                        }
+                    }
+
                     // 关闭窗口行为（任务 6.4）：0 每次询问 / 1 最小化到托盘 / 2 退出程序
                     Item {
                         width: parent.width

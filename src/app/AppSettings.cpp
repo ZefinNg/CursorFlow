@@ -22,6 +22,9 @@ const QLatin1String kCloseAction("general/closeAction");
 const QLatin1String kFunStyle("fun/style");
 const QLatin1String kCustomRefName("fun/customRefName");
 const QLatin1String kCustomRefValue("fun/customRefValue");
+const QLatin1String kFloatingOverlay("display/floatingOverlay");
+const QLatin1String kOverlayX("overlay/x");
+const QLatin1String kOverlayY("overlay/y");
 
 // 自启注册键（04 号文档 §2.3：Win 注册表 Run；macOS/Linux 机制在跨平台任务接入）
 void applyPlatformAutostart(bool enabled)
@@ -62,6 +65,9 @@ AppSettings::AppSettings(DataManager* dataManager, QObject* parent)
     funStyle_ = settings.value(kFunStyle, 0).toInt();
     customRefName_ = settings.value(kCustomRefName, QString()).toString();
     customRefValue_ = settings.value(kCustomRefValue, 0.0).toDouble();
+    showFloatingOverlay_ = settings.value(kFloatingOverlay, true).toBool();
+    overlayX_ = settings.value(kOverlayX, -1).toInt();
+    overlayY_ = settings.value(kOverlayY, -1).toInt();
 }
 
 void AppSettings::setAutostart(bool enabled)
@@ -245,6 +251,39 @@ void AppSettings::setCustomRefValue(double value)
     QSettings settings;
     settings.setValue(kCustomRefValue, value);
     emit customRefChanged();
+}
+
+void AppSettings::setShowFloatingOverlay(bool show)
+{
+    if (showFloatingOverlay_ == show) {
+        return;
+    }
+    showFloatingOverlay_ = show;
+    QSettings settings;
+    settings.setValue(kFloatingOverlay, show);
+    emit showFloatingOverlayChanged(show);
+}
+
+void AppSettings::setOverlayX(int x)
+{
+    if (overlayX_ == x) {
+        return;
+    }
+    overlayX_ = x;
+    QSettings settings;
+    settings.setValue(kOverlayX, x);
+    emit overlayPosChanged();
+}
+
+void AppSettings::setOverlayY(int y)
+{
+    if (overlayY_ == y) {
+        return;
+    }
+    overlayY_ = y;
+    QSettings settings;
+    settings.setValue(kOverlayY, y);
+    emit overlayPosChanged();
 }
 
 bool AppSettings::systemPrefersDark() const
