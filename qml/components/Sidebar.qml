@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 
-// 图标导航侧栏（04 号文档 §2）：概览 / 历史 / 设置
+// 图标导航侧栏（04 号文档 §2）：概览 / 历史 / 成就 / 设置
 Rectangle {
     id: root
 
@@ -29,6 +29,7 @@ Rectangle {
             model: [
                 { icon: "qrc:/qml/icons/overview.svg", text: qsTr("概览") },
                 { icon: "qrc:/qml/icons/history.svg", text: qsTr("历史") },
+                { icon: "qrc:/qml/icons/achievements.svg", text: qsTr("成就") },
                 { icon: "qrc:/qml/icons/settings.svg", text: qsTr("设置") },
             ]
 

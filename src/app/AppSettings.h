@@ -27,13 +27,6 @@ class AppSettings : public QObject
     Q_PROPERTY(bool onboarded READ onboarded WRITE setOnboarded NOTIFY onboardedChanged)
     // 关闭窗口行为（任务 6.4，M4）：0=每次询问（默认）1=最小化到托盘 2=退出程序
     Q_PROPERTY(int closeAction READ closeAction WRITE setCloseAction NOTIFY closeActionChanged)
-    // 趣味数据（M5 7.5，07 号文档 §5）：类比风格 0=运动系 1=文艺系 2=极客系
-    Q_PROPERTY(int funStyle READ funStyle WRITE setFunStyle NOTIFY funStyleChanged)
-    // 自定义参照物：名称为空表示禁用；量值单位为米（距离类参照）
-    Q_PROPERTY(QString customRefName READ customRefName WRITE setCustomRefName
-                   NOTIFY customRefChanged)
-    Q_PROPERTY(double customRefValue READ customRefValue WRITE setCustomRefValue
-                   NOTIFY customRefChanged)
     // 悬浮窗今日概览（M6 8.2，PRD 3.9）：最小化/隐藏时显示；位置 -1 表示首次默认
     Q_PROPERTY(bool showFloatingOverlay READ showFloatingOverlay WRITE setShowFloatingOverlay
                    NOTIFY showFloatingOverlayChanged)
@@ -84,14 +77,6 @@ public:
     int closeAction() const { return closeAction_; }
     void setCloseAction(int action);
 
-    int funStyle() const { return funStyle_; }
-    void setFunStyle(int style);
-
-    QString customRefName() const { return customRefName_; }
-    void setCustomRefName(const QString& name);
-    double customRefValue() const { return customRefValue_; }
-    void setCustomRefValue(double value);
-
     bool showFloatingOverlay() const { return showFloatingOverlay_; }
     void setShowFloatingOverlay(bool show);
     int overlayX() const { return overlayX_; }
@@ -114,8 +99,6 @@ signals:
     void calibrationChanged();
     void onboardedChanged(bool done);
     void closeActionChanged(int action);
-    void funStyleChanged(int style);
-    void customRefChanged();
     void showFloatingOverlayChanged(bool show);
     void overlayPosChanged();
 
@@ -132,9 +115,6 @@ private:
     int calibrationPpi_ = 96; // 未校准默认 96 DPI 估算（06 号文档 §6 风险应对）
     bool onboarded_ = false;
     int closeAction_ = 0; // 0=每次询问（6.4）
-    int funStyle_ = 0;    // 0=运动系 1=文艺系 2=极客系（M5 7.5）
-    QString customRefName_;
-    double customRefValue_ = 0.0;
     bool showFloatingOverlay_ = true; // M6 8.2，PRD 3.9 默认开启
     int overlayX_ = -1;   // -1 = 首次默认屏幕右下角
     int overlayY_ = -1;

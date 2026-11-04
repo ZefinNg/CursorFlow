@@ -127,7 +127,30 @@
     <name>AchievementsDialog</name>
     <message>
         <source>我的成就</source>
+        <translation type="vanished">My Achievements</translation>
+    </message>
+    <message>
+        <source>已于 %1 达成</source>
+        <translation type="vanished">Unlocked on %1</translation>
+    </message>
+    <message>
+        <source>继续使用以解锁</source>
+        <translation type="vanished">Keep using CursorFlow to unlock</translation>
+    </message>
+    <message>
+        <source>关闭</source>
+        <translation type="vanished">Close</translation>
+    </message>
+</context>
+<context>
+    <name>AchievementsPage</name>
+    <message>
+        <source>我的成就</source>
         <translation>My Achievements</translation>
+    </message>
+    <message>
+        <source>已解锁 %1 / %2</source>
+        <translation>Unlocked %1 / %2</translation>
     </message>
     <message>
         <source>已于 %1 达成</source>
@@ -136,10 +159,6 @@
     <message>
         <source>继续使用以解锁</source>
         <translation>Keep using CursorFlow to unlock</translation>
-    </message>
-    <message>
-        <source>关闭</source>
-        <translation>Close</translation>
     </message>
 </context>
 <context>
@@ -252,6 +271,10 @@
     <message>
         <source>今日爆肝预警——鼠标 %1、按键 %2 次，起来喝口水休息一下吧。</source>
         <translation>Grinding alert — %1 of cursor travel and %2 keystrokes; time for a water break.</translation>
+    </message>
+    <message>
+        <source>相当于%1的 %2 倍</source>
+        <translation>Equal to %2 × %1</translation>
     </message>
 </context>
 <context>
@@ -603,55 +626,55 @@
     </message>
     <message>
         <source>趣味数据</source>
-        <translation>Fun Facts</translation>
+        <translation type="vanished">Fun Facts</translation>
     </message>
     <message>
         <source>类比风格</source>
-        <translation>Analogy Style</translation>
+        <translation type="vanished">Analogy Style</translation>
     </message>
     <message>
         <source>趣味换算与每日简报的文案风格</source>
-        <translation>Tone of fun-fact comparisons and the daily brief</translation>
+        <translation type="vanished">Tone of fun-fact comparisons and the daily brief</translation>
     </message>
     <message>
         <source>运动系</source>
-        <translation>Sporty</translation>
+        <translation type="vanished">Sporty</translation>
     </message>
     <message>
         <source>文艺系</source>
-        <translation>Artistic</translation>
+        <translation type="vanished">Artistic</translation>
     </message>
     <message>
         <source>极客系</source>
-        <translation>Geeky</translation>
+        <translation type="vanished">Geeky</translation>
     </message>
     <message>
         <source>自定义参照物</source>
-        <translation>Custom Reference</translation>
+        <translation type="vanished">Custom Reference</translation>
     </message>
     <message>
         <source>用它替换软件内置参照物</source>
-        <translation>Replaces built-in references in comparisons</translation>
+        <translation type="vanished">Replaces built-in references in comparisons</translation>
     </message>
     <message>
         <source>如：客厅（留空禁用）</source>
-        <translation>e.g. Living room (empty to disable)</translation>
+        <translation type="vanished">e.g. Living room (empty to disable)</translation>
     </message>
     <message>
         <source>参照物长度（米）</source>
-        <translation>Reference Length (m)</translation>
+        <translation type="vanished">Reference Length (m)</translation>
     </message>
     <message>
         <source>成就</source>
-        <translation>Achievements</translation>
+        <translation type="vanished">Achievements</translation>
     </message>
     <message>
         <source>累计数据达到阈值时自动解锁</source>
-        <translation>Unlocked automatically when totals reach thresholds</translation>
+        <translation type="vanished">Unlocked automatically when totals reach thresholds</translation>
     </message>
     <message>
         <source>查看成就</source>
-        <translation>View Achievements</translation>
+        <translation type="vanished">View Achievements</translation>
     </message>
     <message>
         <source>最小化时显示悬浮窗</source>
@@ -675,6 +698,10 @@
     <message>
         <source>设置</source>
         <translation>Settings</translation>
+    </message>
+    <message>
+        <source>成就</source>
+        <translation>Achievements</translation>
     </message>
 </context>
 <context>

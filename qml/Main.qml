@@ -67,9 +67,13 @@ ApplicationWindow {
     property bool privacyDeclined: false
 
     function openPage(index) {
-        const comps = [dashboardComp, historyComp, settingsComp]
+        const comps = [dashboardComp, historyComp, achievementsComp, settingsComp]
         if (stack.currentItem && stack.currentItem.pageIndex === index) {
             return
+        }
+        // 进入概览时随机换一条类比（PRD 3.8.1：每次进入概览随机挑选换算参照）
+        if (index === 0) {
+            funFacts.randomizeAnalogy()
         }
         stack.replace(comps[index], {}, StackView.Immediate)
     }
@@ -187,6 +191,10 @@ ApplicationWindow {
     Component {
         id: historyComp
         HistoryPage {}
+    }
+    Component {
+        id: achievementsComp
+        AchievementsPage {}
     }
     Component {
         id: settingsComp

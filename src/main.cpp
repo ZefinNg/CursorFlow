@@ -218,8 +218,8 @@ int main(int argc, char* argv[])
     engine.rootContext()->setContextProperty(QStringLiteral("theme"), &appTheme);
     engine.rootContext()->setContextProperty(QStringLiteral("history"), &historyController);
     engine.rootContext()->setContextProperty(QStringLiteral("exporter"), &exporterController);
-    // 趣味数据（M5 7.1/7.3，07 号文档）：类比引擎与成就系统
-    FunFactsController funFactsController(&appSettings, &dataManager);
+    // 趣味数据（M5 7.1/7.3，07 号文档）：类比引擎（M6 增补：类比库入数据库）与成就系统
+    FunFactsController funFactsController(&appSettings, &dataManager, &database);
     AchievementController achievementController(&dataManager, &database);
     engine.rootContext()->setContextProperty(QStringLiteral("funFacts"), &funFactsController);
     engine.rootContext()->setContextProperty(QStringLiteral("achievements"), &achievementController);

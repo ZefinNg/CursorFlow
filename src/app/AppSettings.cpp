@@ -19,9 +19,6 @@ const QLatin1String kCalibrationInch("calibration/diagonalInch");
 const QLatin1String kCalibrationPpi("calibration/ppi");
 const QLatin1String kOnboarded("general/onboarded");
 const QLatin1String kCloseAction("general/closeAction");
-const QLatin1String kFunStyle("fun/style");
-const QLatin1String kCustomRefName("fun/customRefName");
-const QLatin1String kCustomRefValue("fun/customRefValue");
 const QLatin1String kFloatingOverlay("display/floatingOverlay");
 const QLatin1String kOverlayX("overlay/x");
 const QLatin1String kOverlayY("overlay/y");
@@ -62,9 +59,6 @@ AppSettings::AppSettings(DataManager* dataManager, QObject* parent)
     calibrationPpi_ = settings.value(kCalibrationPpi, 96).toInt();
     onboarded_ = settings.value(kOnboarded, false).toBool();
     closeAction_ = settings.value(kCloseAction, 0).toInt();
-    funStyle_ = settings.value(kFunStyle, 0).toInt();
-    customRefName_ = settings.value(kCustomRefName, QString()).toString();
-    customRefValue_ = settings.value(kCustomRefValue, 0.0).toDouble();
     showFloatingOverlay_ = settings.value(kFloatingOverlay, true).toBool();
     overlayX_ = settings.value(kOverlayX, -1).toInt();
     overlayY_ = settings.value(kOverlayY, -1).toInt();
@@ -214,43 +208,6 @@ void AppSettings::setCloseAction(int action)
     QSettings settings;
     settings.setValue(kCloseAction, action);
     emit closeActionChanged(action);
-}
-
-void AppSettings::setFunStyle(int style)
-{
-    // 仅接受合法值（0 运动系 / 1 文艺系 / 2 极客系，M5 7.5）
-    if (style != 0 && style != 1 && style != 2) {
-        style = 0;
-    }
-    if (funStyle_ == style) {
-        return;
-    }
-    funStyle_ = style;
-    QSettings settings;
-    settings.setValue(kFunStyle, style);
-    emit funStyleChanged(style);
-}
-
-void AppSettings::setCustomRefName(const QString& name)
-{
-    if (customRefName_ == name) {
-        return;
-    }
-    customRefName_ = name;
-    QSettings settings;
-    settings.setValue(kCustomRefName, name);
-    emit customRefChanged();
-}
-
-void AppSettings::setCustomRefValue(double value)
-{
-    if (qFuzzyCompare(customRefValue_, value)) {
-        return;
-    }
-    customRefValue_ = value;
-    QSettings settings;
-    settings.setValue(kCustomRefValue, value);
-    emit customRefChanged();
 }
 
 void AppSettings::setShowFloatingOverlay(bool show)

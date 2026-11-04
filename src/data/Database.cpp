@@ -5,6 +5,9 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QStandardPaths>
@@ -69,6 +72,9 @@ bool Database::open(const QString& filePath)
         return false;
     }
 
+    // 类比规则库首次导入（M6 增补，PRD 3.8.1）：空表时从 qrc 资源导入 200 条
+    seedAnalogyRules();
+
     const int version = schemaVersion();
     if (version > kSchemaVersion) {
         qWarning() << "Database: schema version" << version << "is newer than supported"
@@ -129,6 +135,12 @@ bool Database::createSchema()
         QStringLiteral("CREATE TABLE IF NOT EXISTS achievements ("
                        "id TEXT PRIMARY KEY, "
                        "unlocked_at TEXT NOT NULL)"),
+        // 类比规则表（M6 增补，PRD 3.8.1）：参照物基准值 + 描述文本，定义随资源内置
+        QStringLiteral("CREATE TABLE IF NOT EXISTS analogy_rules ("
+                       "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                       "kind TEXT NOT NULL CHECK(kind IN ('distance','keystrokes')), "
+                       "ref_value REAL NOT NULL, "
+                       "ref_text TEXT NOT NULL)"),
         QStringLiteral("INSERT OR IGNORE INTO meta(key, value) VALUES('schema_version', '%1')")
             .arg(kSchemaVersion),
         QStringLiteral("INSERT OR IGNORE INTO meta(key, value) VALUES('first_run_date', '%1')")
@@ -347,6 +359,91 @@ QVariantMap Database::achievementUnlocks() const
     }
     while (query.next()) {
         result.insert(query.value(0).toString(), query.value(1).toString());
+    }
+    return result;
+}
+
+int Database::seedAnalogyRules()
+{
+    // 空表时从 qrc 内置资源导入（M6 增补，PRD 3.8.1：200 条，距离/按键各 100）
+    QSqlQuery count(db_);
+    if (!count.exec(QStringLiteral("SELECT COUNT(*) FROM analogy_rules")) || !count.next()) {
+        qWarning() << "Database: count analogy_rules failed:" << count.lastError().text();
+        return -1;
+    }
+    int total = count.value(0).toInt();
+    if (total > 0) {
+        return total;
+    }
+
+    QFile file(QStringLiteral(":/qml/analogy.json"));
+    if (!file.open(QIODevice::ReadOnly)) {
+        qWarning() << "Database: analogy rules asset missing :/qml/analogy.json";
+        return 0;
+    }
+    const QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
+    const QJsonObject root = doc.object();
+
+    struct KindMap {
+        const char* key;
+        const char* kind;
+    };
+    const KindMap kinds[] = {
+        {"distance", "distance"},
+        {"keystrokes", "keystrokes"},
+    };
+
+    if (!beginTransaction()) {
+        return total;
+    }
+    QSqlQuery insert(db_);
+    insert.prepare(QStringLiteral(
+        "INSERT INTO analogy_rules(kind, ref_value, ref_text) VALUES(?, ?, ?)"));
+    for (const KindMap& km : kinds) {
+        const QJsonArray arr = root.value(QLatin1String(km.key)).toArray();
+        for (const QJsonValue& v : arr) {
+            const QJsonObject o = v.toObject();
+            const double refValue = o.value(QStringLiteral("refValue")).toDouble();
+            const QString text = o.value(QStringLiteral("text")).toString();
+            if (refValue <= 0.0 || text.isEmpty()) {
+                continue;
+            }
+            insert.addBindValue(QLatin1String(km.kind));
+            insert.addBindValue(refValue);
+            insert.addBindValue(text);
+            if (!insert.exec()) {
+                qWarning() << "Database: seed analogy failed:" << insert.lastError().text();
+            }
+        }
+    }
+    if (!commitTransaction()) {
+        return total;
+    }
+
+    if (!count.exec(QStringLiteral("SELECT COUNT(*) FROM analogy_rules")) || !count.next()) {
+        return 0;
+    }
+    total = count.value(0).toInt();
+    qInfo() << "Database: analogy rules seeded," << total << "entries";
+    return total;
+}
+
+QList<AnalogyRule> Database::analogyRules(const QString& kind) const
+{
+    QList<AnalogyRule> result;
+    QSqlQuery query(db_);
+    query.prepare(QStringLiteral(
+        "SELECT ref_value, ref_text FROM analogy_rules WHERE kind = ? ORDER BY id"));
+    query.addBindValue(kind);
+    if (!query.exec()) {
+        qWarning() << "Database: query analogy_rules failed:" << query.lastError().text();
+        return result;
+    }
+    while (query.next()) {
+        AnalogyRule rule;
+        rule.refValue = query.value(0).toDouble();
+        rule.text = query.value(1).toString();
+        result.append(rule);
     }
     return result;
 }

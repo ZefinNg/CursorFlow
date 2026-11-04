@@ -24,6 +24,13 @@ struct HourlyStats {
     int keyPressCount = 0;
 };
 
+// 类比规则条目（对应 analogy_rules 表）：参照物基准值与描述文本
+// （M6 增补，PRD 3.8.1：距离单位米、按键单位次）
+struct AnalogyRule {
+    double refValue = 1.0;
+    QString text;
+};
+
 // SQLite 存储层封装（设计见 docs/tech/03-数据存储设计.md）。
 // 仅限主线程使用；写入为"覆盖写"UPSERT，同一快照重复写入不翻倍。
 class Database
@@ -70,6 +77,13 @@ public:
 
     // 已解锁成就：id → 达成时间（ISO 字符串）
     QVariantMap achievementUnlocks() const;
+
+    // 类比规则库（M6 增补，PRD 3.8.1）：kind = "distance"（米）/ "keystrokes"（次）。
+    // 首次建库时从 qrc :/qml/analogy.json（200 条）导入空表，返回表内条目总数。
+    int seedAnalogyRules();
+
+    // 读取指定类别的全部类比条目（按 id 升序）。
+    QList<AnalogyRule> analogyRules(const QString& kind) const;
 
     int schemaVersion() const;
 

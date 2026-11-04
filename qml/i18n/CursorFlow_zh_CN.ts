@@ -127,7 +127,30 @@
     <name>AchievementsDialog</name>
     <message>
         <source>我的成就</source>
+        <translation type="vanished">我的成就</translation>
+    </message>
+    <message>
+        <source>已于 %1 达成</source>
+        <translation type="vanished">已于 %1 达成</translation>
+    </message>
+    <message>
+        <source>继续使用以解锁</source>
+        <translation type="vanished">继续使用以解锁</translation>
+    </message>
+    <message>
+        <source>关闭</source>
+        <translation type="vanished">关闭</translation>
+    </message>
+</context>
+<context>
+    <name>AchievementsPage</name>
+    <message>
+        <source>我的成就</source>
         <translation>我的成就</translation>
+    </message>
+    <message>
+        <source>已解锁 %1 / %2</source>
+        <translation>已解锁 %1 / %2</translation>
     </message>
     <message>
         <source>已于 %1 达成</source>
@@ -136,10 +159,6 @@
     <message>
         <source>继续使用以解锁</source>
         <translation>继续使用以解锁</translation>
-    </message>
-    <message>
-        <source>关闭</source>
-        <translation>关闭</translation>
     </message>
 </context>
 <context>
@@ -252,6 +271,10 @@
     <message>
         <source>今日爆肝预警——鼠标 %1、按键 %2 次，起来喝口水休息一下吧。</source>
         <translation>今日爆肝预警——鼠标 %1、按键 %2 次，起来喝口水休息一下吧。</translation>
+    </message>
+    <message>
+        <source>相当于%1的 %2 倍</source>
+        <translation>相当于%1的 %2 倍</translation>
     </message>
 </context>
 <context>
@@ -603,55 +626,55 @@
     </message>
     <message>
         <source>趣味数据</source>
-        <translation>趣味数据</translation>
+        <translation type="vanished">趣味数据</translation>
     </message>
     <message>
         <source>类比风格</source>
-        <translation>类比风格</translation>
+        <translation type="vanished">类比风格</translation>
     </message>
     <message>
         <source>趣味换算与每日简报的文案风格</source>
-        <translation>趣味换算与每日简报的文案风格</translation>
+        <translation type="vanished">趣味换算与每日简报的文案风格</translation>
     </message>
     <message>
         <source>运动系</source>
-        <translation>运动系</translation>
+        <translation type="vanished">运动系</translation>
     </message>
     <message>
         <source>文艺系</source>
-        <translation>文艺系</translation>
+        <translation type="vanished">文艺系</translation>
     </message>
     <message>
         <source>极客系</source>
-        <translation>极客系</translation>
+        <translation type="vanished">极客系</translation>
     </message>
     <message>
         <source>自定义参照物</source>
-        <translation>自定义参照物</translation>
+        <translation type="vanished">自定义参照物</translation>
     </message>
     <message>
         <source>用它替换软件内置参照物</source>
-        <translation>用它替换软件内置参照物</translation>
+        <translation type="vanished">用它替换软件内置参照物</translation>
     </message>
     <message>
         <source>如：客厅（留空禁用）</source>
-        <translation>如：客厅（留空禁用）</translation>
+        <translation type="vanished">如：客厅（留空禁用）</translation>
     </message>
     <message>
         <source>参照物长度（米）</source>
-        <translation>参照物长度（米）</translation>
+        <translation type="vanished">参照物长度（米）</translation>
     </message>
     <message>
         <source>成就</source>
-        <translation>成就</translation>
+        <translation type="vanished">成就</translation>
     </message>
     <message>
         <source>累计数据达到阈值时自动解锁</source>
-        <translation>累计数据达到阈值时自动解锁</translation>
+        <translation type="vanished">累计数据达到阈值时自动解锁</translation>
     </message>
     <message>
         <source>查看成就</source>
-        <translation>查看成就</translation>
+        <translation type="vanished">查看成就</translation>
     </message>
     <message>
         <source>最小化时显示悬浮窗</source>
@@ -675,6 +698,10 @@
     <message>
         <source>设置</source>
         <translation>设置</translation>
+    </message>
+    <message>
+        <source>成就</source>
+        <translation>成就</translation>
     </message>
 </context>
 <context>
