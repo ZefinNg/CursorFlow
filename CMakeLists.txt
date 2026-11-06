@@ -175,7 +175,9 @@ install(TARGETS CursorFlow
 )
 if(WIN32)
     # 安装期调用 windeployqt 收集运行时依赖，再按需剪裁（05 号文档 §4 包体控制）：
-    # - 应用未用 Network / VirtualKeyboard / bearer / qmltooling（调试插件）
+    # - 按需剪裁（05 号文档 §4 包体控制）：
+    # - 应用未用 VirtualKeyboard / bearer / qmltooling（调试插件）
+    # - 保留 Qt5Network.dll / Qt5RemoteObjects.dll —— 由 windeployqt 基于实际依赖决定
     # - SQLite 之外的 SQL 驱动、图片编解码器仅保留 svg/ico/jpeg
     install(CODE "
         get_filename_component(QtBinDir \"\${Qt5_DIR}/../../../bin\" ABSOLUTE)
@@ -191,9 +193,9 @@ if(WIN32)
         foreach(_dir virtualkeyboard bearer qmltooling QtQml/RemoteObjects)
             file(REMOVE_RECURSE \"\${CMAKE_INSTALL_PREFIX}/\${_dir}\")
         endforeach()
-        # windeployqt 会连带部署未使用的 RemoteObjects（dumpbin 确认 exe 无此依赖）
-        file(REMOVE \"\${CMAKE_INSTALL_PREFIX}/Qt5Network.dll\"
-                    \"\${CMAKE_INSTALL_PREFIX}/Qt5RemoteObjects.dll\")
+        # 依赖清单以 windeployqt 的 dumpbin 结果为准：Qt 5.15 的 QML 插件链
+        # （QtQuick -> QtGraphicalEffects）在某些机器上会触发 Qt5Network.dll 加载，
+        # 不能硬裁剪，否则干净机器启动即崩溃。
         file(GLOB _sqlDrivers \"\${CMAKE_INSTALL_PREFIX}/sqldrivers/*.dll\")
         foreach(_drv \${_sqlDrivers})
             if(NOT _drv MATCHES \"qsqlite\")
