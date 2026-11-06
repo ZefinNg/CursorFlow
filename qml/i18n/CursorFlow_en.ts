@@ -376,6 +376,10 @@
         <translation>Skip</translation>
     </message>
     <message>
+        <source>上一步</source>
+        <translation>Back</translation>
+    </message>
+    <message>
         <source>下一步</source>
         <translation>Next</translation>
     </message>

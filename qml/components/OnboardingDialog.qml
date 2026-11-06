@@ -30,6 +30,7 @@ Dialog {
     }
 
     contentItem: Column {
+        width: dialog.availableWidth
         spacing: 14
 
         // ---- 第 1 步：欢迎 + 隐私要点 ----
@@ -137,9 +138,18 @@ Dialog {
             onClicked: dialog.finish()
         }
         Button {
+            visible: dialog.step === 1
+            flat: true
+            text: qsTr("上一步")
+            DialogButtonBox.buttonRole: DialogButtonBox.ActionRole
+            onClicked: dialog.step -= 1
+        }
+        Button {
             visible: dialog.step < 2
+            // 向导中间步骤必须用 ActionRole：AcceptRole 会让 Dialog 自动 accept()
+            // 并关闭弹窗，导致第 2、3 步永远无法进入。
             text: qsTr("下一步")
-            DialogButtonBox.buttonRole: DialogButtonBox.AcceptRole
+            DialogButtonBox.buttonRole: DialogButtonBox.ActionRole
             onClicked: {
                 if (dialog.step === 1) {
                     settings.setCalibration(inchBox.value, widthBox.value, heightBox.value)
@@ -150,7 +160,7 @@ Dialog {
         Button {
             visible: dialog.step === 2
             text: qsTr("完成")
-            DialogButtonBox.buttonRole: DialogButtonBox.AcceptRole
+            DialogButtonBox.buttonRole: DialogButtonBox.ActionRole
             onClicked: dialog.finish()
         }
     }

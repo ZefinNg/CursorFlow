@@ -229,7 +229,7 @@ ApplicationWindow {
 
         onAccepted: {
             privacy.accept()
-            if (!settings.onboarded) {
+            if (!settings.onboarded || forceOnboarding) {
                 onboardingDialog.open()
             }
         }
@@ -238,7 +238,7 @@ ApplicationWindow {
         Component.onCompleted: {
             if (!privacy.accepted) {
                 open()
-            } else if (!settings.onboarded) {
+            } else if (!settings.onboarded || forceOnboarding) {
                 onboardingDialog.open()
             }
         }

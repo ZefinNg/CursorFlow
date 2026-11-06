@@ -90,6 +90,10 @@ int main(int argc, char* argv[])
 
     QQuickStyle::setStyle(QStringLiteral("Fusion"));
 
+    // 原生控件（QMessageBox / QMenu）也必须用 Fusion：Windows 默认的 windowsvista
+    // 风格会用系统浅色绘制弹窗背景并忽略 QPalette::Window，导致浅色文字看不清。
+    QApplication::setStyle(QStringLiteral("Fusion"));
+
     // 深色调色板：QMessageBox / QMenu 等原生弹窗跟随（04 号文档 §8 深色基底）
     QPalette pal;
     const QColor bgColor(0x0F, 0x11, 0x17);
@@ -223,6 +227,10 @@ int main(int argc, char* argv[])
     AchievementController achievementController(&dataManager, &database);
     engine.rootContext()->setContextProperty(QStringLiteral("funFacts"), &funFactsController);
     engine.rootContext()->setContextProperty(QStringLiteral("achievements"), &achievementController);
+    // 首启引导测试开关：设置环境变量 CURSORFLOW_FORCE_ONBOARDING=1 可忽略
+    // general/onboarded 标记强制弹出向导，便于回归验证（正常用户不受影响）。
+    const bool forceOnboarding = qEnvironmentVariableIsSet("CURSORFLOW_FORCE_ONBOARDING");
+    engine.rootContext()->setContextProperty(QStringLiteral("forceOnboarding"), forceOnboarding);
     engine.load(QUrl(QStringLiteral("qrc:/qml/Main.qml")));
     if (engine.rootObjects().isEmpty()) {
         qCritical() << "QML 主窗口加载失败，应用退出（QML 错误见上方输出）";

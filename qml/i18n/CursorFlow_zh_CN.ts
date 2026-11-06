@@ -376,6 +376,10 @@
         <translation>跳过</translation>
     </message>
     <message>
+        <source>上一步</source>
+        <translation>上一步</translation>
+    </message>
+    <message>
         <source>下一步</source>
         <translation>下一步</translation>
     </message>
