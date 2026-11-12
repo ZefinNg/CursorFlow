@@ -82,7 +82,10 @@ Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExe}"; Tasks: desktopico
 Filename: "{tmp}\VC_redist.x64.exe"; Parameters: "/install /quiet /norestart"; StatusMsg: "Installing Microsoft Visual C++ Runtime..."; Flags: waituntilterminated; Check: NeedsVCRedist
   #endif
 #endif
-Filename: "{app}\{#AppExe}"; Description: "{cm:LaunchProgram,{#AppName}}"; Flags: nowait postinstall skipifsilent
+; runasoriginaluser：安装程序以管理员权限运行，这里必须以登录用户身份启动应用，
+; 否则应用内的"开机自启"开关会把 HKCU Run 值写进管理员帐户的注册表配置单元，
+; 该用户下次登录时启动项不会生效（任务管理器里却显示"已启用"）。
+Filename: "{app}\{#AppExe}"; Description: "{cm:LaunchProgram,{#AppName}}"; Flags: nowait postinstall skipifsilent runasoriginaluser
 
 [Code]
 function NeedsVCRedist(): Boolean;

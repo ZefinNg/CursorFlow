@@ -1,6 +1,8 @@
 #include "app/AppSettings.h"
 
 #include <QCoreApplication>
+#include <QDebug>
+#include <QDir>
 #include <QSettings>
 
 #include "version.h"
@@ -32,10 +34,25 @@ void applyPlatformAutostart(bool enabled)
             "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"),
         QSettings::NativeFormat);
     if (enabled) {
-        run.setValue(QStringLiteral("CursorFlow"),
-                     QStringLiteral("\"%1\"").arg(QCoreApplication::applicationFilePath()));
-    } else {
+        // 路径必须写成反斜杠的本地形式：Run 值由 Explorer 直接作为命令行启动，
+        // applicationFilePath() 返回的正斜杠（C:/Program Files/...）在部分系统上
+        // 会导致启动项静默失效（任务管理器中仍显示"已启用"）。
+        const QString exePath =
+            QDir::toNativeSeparators(QCoreApplication::applicationFilePath());
+        const QString value = QStringLiteral("\"%1\"").arg(exePath);
+        if (run.value(QStringLiteral("CursorFlow")).toString() != value) {
+            run.setValue(QStringLiteral("CursorFlow"), value);
+            run.sync();
+        }
+        if (run.status() != QSettings::NoError) {
+            qWarning() << "自启注册表写入失败 · 键" << run.fileName() << "· 状态"
+                       << int(run.status());
+        } else {
+            qInfo() << "开机自启注册表已就绪 ·" << value;
+        }
+    } else if (run.contains(QStringLiteral("CursorFlow"))) {
         run.remove(QStringLiteral("CursorFlow"));
+        run.sync();
     }
 #else
     Q_UNUSED(enabled);
@@ -62,6 +79,11 @@ AppSettings::AppSettings(DataManager* dataManager, QObject* parent)
     showFloatingOverlay_ = settings.value(kFloatingOverlay, true).toBool();
     overlayX_ = settings.value(kOverlayX, -1).toInt();
     overlayY_ = settings.value(kOverlayY, -1).toInt();
+
+    // 自愈：设置里已开启自启时，每次启动校验并纠正注册表 Run 值
+    // （安装路径变更、被清理工具删除、旧版本写入正斜杠路径等都会导致
+    // 任务管理器显示"已启用"但开机不启动）。
+    applyPlatformAutostart(autostart_);
 }
 
 void AppSettings::setAutostart(bool enabled)
