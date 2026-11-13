@@ -2,6 +2,8 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Window 2.15
 
+import CursorFlow.GifPlayer 1.0
+
 // 悬浮窗今日概览（M6 8.1，PRD 3.9，04 号文档 §2.7）：主窗口最小化/隐藏到托盘时
 // 显示的半透明置顶小窗；仅展示今日距离/按键/活跃时长三项，随采集增量动态刷新。
 // 可拖拽（位置记忆 overlay/x、overlay/y），可关闭（记住选择）。
@@ -11,6 +13,9 @@ Window {
 
     // 点击"打开主窗口"按钮（M6 8.2 增补）→ Main.qml 激活主窗口
     signal showMainRequested()
+
+    // M7 可选 GIF（PRD 3.10.3）：默认随 gifEnabled 关闭，开启后右下角预留 64×64
+    readonly property bool gifOn: settings.gifEnabled && settings.animationsEnabled
 
     width: 220
     height: 132
@@ -104,10 +109,54 @@ Window {
             }
         }
 
+        // M7 可选 GIF 展示（PRD 3.10.3，04 号文档 §2.7）：右下角 64×64 区域，
+        // 由实时按键速度驱动；Loader 默认 inactive（gifEnabled 默认关闭），
+        // 窗口隐藏时 playing 跟随 visible 自动暂停，避免后台空转。
+        Loader {
+            id: overlayGifLoader
+            anchors.right: infoColumn.left
+            anchors.rightMargin: 20
+            anchors.verticalCenter: parent.verticalCenter
+            width: 64
+            height: 64
+            visible: active
+            active: overlay.gifOn
+
+            sourceComponent: Item {
+                GifPlayer {
+                    id: overlayGif
+                    source: settings.gifSource
+                    speed: settings.gifCurrentSpeed
+                    playing: overlay.visible
+                }
+
+                Image {
+                    id: overlayGifImage
+                    anchors.fill: parent
+                    property int frameTick: 0
+                    source: overlayGif.imageUrl + "?f=" + frameTick
+                    cache: false
+                    asynchronous: false
+                    fillMode: Image.PreserveAspectFit
+
+                    Connections {
+                        target: overlayGif
+                        function onFrameChanged() { overlayGifImage.frameTick += 1 }
+                        function onSourceChanged() { overlayGifImage.frameTick += 1 }
+                    }
+                }
+            }
+        }
+
         Column {
-            x: 16
-            y: 10
-            width: parent.width - 32
+            // x: 16
+            // y: 10
+            id: infoColumn
+            anchors.right: parent.right
+            anchors.rightMargin: 20
+            anchors.verticalCenter: parent.verticalCenter
+            // GIF 开启时右侧让出 64×64 区域，数值右对齐收窄避免被遮挡
+            width: parent.width - 32 - (overlay.gifOn ? 72 : 0)
             spacing: 7
 
             Item {

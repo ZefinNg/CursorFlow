@@ -32,6 +32,22 @@ class AppSettings : public QObject
                    NOTIFY showFloatingOverlayChanged)
     Q_PROPERTY(int overlayX READ overlayX WRITE setOverlayX NOTIFY overlayPosChanged)
     Q_PROPERTY(int overlayY READ overlayY WRITE setOverlayY NOTIFY overlayPosChanged)
+    // M7 GIF 动效（PRD 3.10.4，08 号文档 §5）
+    Q_PROPERTY(bool gifEnabled READ gifEnabled WRITE setGifEnabled NOTIFY gifConfigChanged)
+    Q_PROPERTY(QString gifSource READ gifSource WRITE setGifSource NOTIFY gifConfigChanged)
+    Q_PROPERTY(int gifMapMode READ gifMapMode WRITE setGifMapMode NOTIFY gifConfigChanged)
+    Q_PROPERTY(int gifCpmMin READ gifCpmMin WRITE setGifCpmMin NOTIFY gifConfigChanged)
+    Q_PROPERTY(int gifCpmMax READ gifCpmMax WRITE setGifCpmMax NOTIFY gifConfigChanged)
+    Q_PROPERTY(double gifSpeedMin READ gifSpeedMin WRITE setGifSpeedMin NOTIFY gifConfigChanged)
+    Q_PROPERTY(double gifSpeedMax READ gifSpeedMax WRITE setGifSpeedMax NOTIFY gifConfigChanged)
+    Q_PROPERTY(int gifIdleTimeoutSec READ gifIdleTimeoutSec WRITE setGifIdleTimeoutSec
+                   NOTIFY gifConfigChanged)
+    Q_PROPERTY(double gifSmoothFactor READ gifSmoothFactor WRITE setGifSmoothFactor
+                   NOTIFY gifConfigChanged)
+    // M7：实时输出（只读，驱动 QML 动态绑定）
+    Q_PROPERTY(double gifCurrentSpeed READ gifCurrentSpeed NOTIFY gifStateChanged)
+    Q_PROPERTY(double gifCurrentCpm READ gifCurrentCpm NOTIFY gifStateChanged)
+    Q_PROPERTY(bool gifIsIdle READ gifIsIdle NOTIFY gifStateChanged)
     // 软件信息（任务 6.1，M4）：编译期注入，运行期不变（CONSTANT）
     Q_PROPERTY(QString appVersion READ appVersion CONSTANT)
     Q_PROPERTY(QString qtVersion READ qtVersion CONSTANT)
@@ -84,7 +100,46 @@ public:
     int overlayY() const { return overlayY_; }
     void setOverlayY(int y);
 
-    // 软件信息（任务 6.1，M4）：版本与 project(VERSION)/安装包同源（version.h）
+    // M7 GIF 动效 getter/setter
+    bool gifEnabled() const { return gifEnabled_; }
+    void setGifEnabled(bool enabled);
+
+    QString gifSource() const { return gifSource_; }
+    void setGifSource(const QString& source);
+
+    int gifMapMode() const { return gifMapMode_; }
+    void setGifMapMode(int mode);
+
+    int gifCpmMin() const { return gifCpmMin_; }
+    void setGifCpmMin(int val);
+
+    int gifCpmMax() const { return gifCpmMax_; }
+    void setGifCpmMax(int val);
+
+    double gifSpeedMin() const { return gifSpeedMin_; }
+    void setGifSpeedMin(double val);
+
+    double gifSpeedMax() const { return gifSpeedMax_; }
+    void setGifSpeedMax(double val);
+
+    int gifIdleTimeoutSec() const { return gifIdleTimeoutSec_; }
+    void setGifIdleTimeoutSec(int sec);
+
+    double gifSmoothFactor() const { return gifSmoothFactor_; }
+    void setGifSmoothFactor(double factor);
+
+    // 只读实时输出（M7，驱动 QML 绑定）
+    double gifCurrentSpeed() const { return gifCurrentSpeed_; }
+    double gifCurrentCpm() const { return gifCurrentCpm_; }
+    bool gifIsIdle() const { return gifIsIdle_; }
+
+    // M7：接收采集线程推送的 CPM（08 号文档 §4）
+    Q_INVOKABLE void onKeySpeedUpdated(double cpm);
+
+    // 映射函数（供测试用）
+    Q_INVOKABLE double mapCpmToSpeed(double cpm) const;
+
+    // 软件信息 getter（M4）
     QString appVersion() const;
     QString qtVersion() const;
     QString buildInfo() const;
@@ -101,6 +156,9 @@ signals:
     void closeActionChanged(int action);
     void showFloatingOverlayChanged(bool show);
     void overlayPosChanged();
+    // M7
+    void gifConfigChanged();
+    void gifStateChanged();
 
 private:
     DataManager* dataManager_;
@@ -112,10 +170,26 @@ private:
     double fontScale_ = 1.0;
     bool animationsEnabled_ = true;
     double calibrationDiagonalInch_ = 0.0;
-    int calibrationPpi_ = 96; // 未校准默认 96 DPI 估算（06 号文档 §6 风险应对）
+    int calibrationPpi_ = 96;
     bool onboarded_ = false;
-    int closeAction_ = 0; // 0=每次询问（6.4）
-    bool showFloatingOverlay_ = true; // M6 8.2，PRD 3.9 默认开启
-    int overlayX_ = -1;   // -1 = 首次默认屏幕右下角
+    int closeAction_ = 0;
+    bool showFloatingOverlay_ = true;
+    int overlayX_ = -1;
     int overlayY_ = -1;
+
+    // M7 GIF 动效配置
+    bool gifEnabled_ = false;
+    QString gifSource_ = QStringLiteral("qrc:/qml/dog.gif");
+    int gifMapMode_ = 0;           // 0=线性 1=分段
+    int gifCpmMin_ = 10;
+    int gifCpmMax_ = 300;
+    double gifSpeedMin_ = 0.5;
+    double gifSpeedMax_ = 3.0;
+    int gifIdleTimeoutSec_ = 1;
+    double gifSmoothFactor_ = 0.15;
+
+    // M7 实时输出
+    double gifCurrentSpeed_ = 0.0;  // 0 = 暂停
+    double gifCurrentCpm_ = 0.0;
+    bool gifIsIdle_ = true;
 };

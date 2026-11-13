@@ -1,6 +1,8 @@
 #include "app/AppSettings.h"
 #include "app/AchievementController.h"
 #include "app/FunFactsController.h"
+#include "app/GifImageProvider.h"
+#include "app/GifPlayer.h"
 #include "app/HistoryController.h"
 #include "app/Logger.h"
 #include "app/PrivacyGate.h"
@@ -142,6 +144,10 @@ int main(int argc, char* argv[])
     QObject::connect(captureWorker, &InputCaptureWorker::deltaReady, &dataManager,
                      &DataManager::applyDelta, Qt::QueuedConnection);
 
+    // M7：实时按键速度推送 → AppSettings 速度映射层（08 号文档 §6 数据流）
+    QObject::connect(captureWorker, &InputCaptureWorker::keySpeedUpdated, &appSettings,
+                     &AppSettings::onKeySpeedUpdated, Qt::QueuedConnection);
+
     // ---- 隐私授权：同意后才开始采集（PRD 5.4）----
     PrivacyGate privacy;
 
@@ -216,6 +222,13 @@ int main(int argc, char* argv[])
 
     // ---- QML（engine 须在托盘引用 window 之前加载）----
     QQmlApplicationEngine engine;
+
+    // M7：GIF ImageProvider 桥接 C++ QMovie → QML Image（08 号文档 §9）
+    auto* gifImageProvider = new GifImageProvider();
+    engine.addImageProvider(QStringLiteral("gif"), gifImageProvider);
+
+    // M7：注册 GifPlayer QML 类型
+    qmlRegisterType<GifPlayer>("CursorFlow.GifPlayer", 1, 0, "GifPlayer");
     engine.rootContext()->setContextProperty(QStringLiteral("privacy"), &privacy);
     engine.rootContext()->setContextProperty(QStringLiteral("stats"), &statsController);
     engine.rootContext()->setContextProperty(QStringLiteral("settings"), &appSettings);

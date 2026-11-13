@@ -25,6 +25,17 @@ const QLatin1String kFloatingOverlay("display/floatingOverlay");
 const QLatin1String kOverlayX("overlay/x");
 const QLatin1String kOverlayY("overlay/y");
 
+// M7 GIF 动效配置键（PRD 3.10.4，08 号文档 §5.1）
+const QLatin1String kGifEnabled("gif/enabled");
+const QLatin1String kGifSource("gif/source");
+const QLatin1String kGifMapMode("gif/mapMode");
+const QLatin1String kGifCpmMin("gif/cpmMin");
+const QLatin1String kGifCpmMax("gif/cpmMax");
+const QLatin1String kGifSpeedMin("gif/speedMin");
+const QLatin1String kGifSpeedMax("gif/speedMax");
+const QLatin1String kGifIdleTimeoutSec("gif/idleTimeoutSec");
+const QLatin1String kGifSmoothFactor("gif/smoothFactor");
+
 // 自启注册键（04 号文档 §2.3：Win 注册表 Run；macOS/Linux 机制在跨平台任务接入）
 void applyPlatformAutostart(bool enabled)
 {
@@ -79,6 +90,17 @@ AppSettings::AppSettings(DataManager* dataManager, QObject* parent)
     showFloatingOverlay_ = settings.value(kFloatingOverlay, true).toBool();
     overlayX_ = settings.value(kOverlayX, -1).toInt();
     overlayY_ = settings.value(kOverlayY, -1).toInt();
+
+    // M7 GIF 动效配置初始化（08 号文档 §5.1 默认值）
+    gifEnabled_ = settings.value(kGifEnabled, false).toBool();
+    gifSource_ = settings.value(kGifSource, QStringLiteral("qrc:/qml/dog.gif")).toString();
+    gifMapMode_ = settings.value(kGifMapMode, 0).toInt();
+    gifCpmMin_ = settings.value(kGifCpmMin, 10).toInt();
+    gifCpmMax_ = settings.value(kGifCpmMax, 300).toInt();
+    gifSpeedMin_ = settings.value(kGifSpeedMin, 0.0).toDouble();
+    gifSpeedMax_ = settings.value(kGifSpeedMax, 3.0).toDouble();
+    gifIdleTimeoutSec_ = settings.value(kGifIdleTimeoutSec, 1).toInt();
+    gifSmoothFactor_ = settings.value(kGifSmoothFactor, 0.15).toDouble();
 
     // 自愈：设置里已开启自启时，每次启动校验并纠正注册表 Run 值
     // （安装路径变更、被清理工具删除、旧版本写入正斜杠路径等都会导致
@@ -278,4 +300,186 @@ bool AppSettings::systemPrefersDark() const
     }
 #endif
     return true; // 无系统偏好时默认深色（PRD 默认深色主题）
+}
+
+// ============================================================================
+// M7 GIF 动效配置 setter（08 号文档 §5）
+// ============================================================================
+
+void AppSettings::setGifEnabled(bool enabled)
+{
+    if (gifEnabled_ == enabled) return;
+    gifEnabled_ = enabled;
+    QSettings settings;
+    settings.setValue(kGifEnabled, enabled);
+    emit gifConfigChanged();
+}
+
+void AppSettings::setGifSource(const QString& source)
+{
+    if (gifSource_ == source) return;
+    gifSource_ = source;
+    QSettings settings;
+    settings.setValue(kGifSource, source);
+    emit gifConfigChanged();
+}
+
+void AppSettings::setGifMapMode(int mode)
+{
+    if (gifMapMode_ == mode) return;
+    gifMapMode_ = mode;
+    QSettings settings;
+    settings.setValue(kGifMapMode, mode);
+    emit gifConfigChanged();
+}
+
+void AppSettings::setGifCpmMin(int val)
+{
+    val = qBound(1, val, gifCpmMax_);
+    if (gifCpmMin_ == val) return;
+    gifCpmMin_ = val;
+    QSettings settings;
+    settings.setValue(kGifCpmMin, val);
+    emit gifConfigChanged();
+}
+
+void AppSettings::setGifCpmMax(int val)
+{
+    val = qBound(gifCpmMin_, val, 500);
+    if (gifCpmMax_ == val) return;
+    gifCpmMax_ = val;
+    QSettings settings;
+    settings.setValue(kGifCpmMax, val);
+    emit gifConfigChanged();
+}
+
+void AppSettings::setGifSpeedMin(double val)
+{
+    val = qBound(0.1, val, gifSpeedMax_);
+    if (qFuzzyCompare(gifSpeedMin_, val)) return;
+    gifSpeedMin_ = val;
+    QSettings settings;
+    settings.setValue(kGifSpeedMin, val);
+    emit gifConfigChanged();
+}
+
+void AppSettings::setGifSpeedMax(double val)
+{
+    val = qBound(gifSpeedMin_, val, 4.0);
+    if (qFuzzyCompare(gifSpeedMax_, val)) return;
+    gifSpeedMax_ = val;
+    QSettings settings;
+    settings.setValue(kGifSpeedMax, val);
+    emit gifConfigChanged();
+}
+
+void AppSettings::setGifIdleTimeoutSec(int sec)
+{
+    sec = qBound(5, sec, 60);
+    if (gifIdleTimeoutSec_ == sec) return;
+    gifIdleTimeoutSec_ = sec;
+    QSettings settings;
+    settings.setValue(kGifIdleTimeoutSec, sec);
+    emit gifConfigChanged();
+}
+
+void AppSettings::setGifSmoothFactor(double factor)
+{
+    factor = qBound(0.05, factor, 0.5);
+    if (qFuzzyCompare(gifSmoothFactor_, factor)) return;
+    gifSmoothFactor_ = factor;
+    QSettings settings;
+    settings.setValue(kGifSmoothFactor, factor);
+    emit gifConfigChanged();
+}
+
+// ============================================================================
+// M7 速度映射（08 号文档 §4）
+// ============================================================================
+
+double AppSettings::mapCpmToSpeed(double cpm) const
+{
+    // 钳制到 [cpmMin, cpmMax]
+    const double lo = static_cast<double>(gifCpmMin_);
+    const double hi = static_cast<double>(gifCpmMax_);
+    cpm = qBound(lo, cpm, hi);
+
+    const double sLo = gifSpeedMin_;
+    const double sHi = gifSpeedMax_;
+
+    if (gifMapMode_ == 0) {
+        // 线性映射：speed = sLo + (cpm - lo) / (hi - lo) × (sHi - sLo)
+        if (qFuzzyCompare(hi, lo)) return sLo;
+        const double t = (cpm - lo) / (hi - lo);
+        return sLo + t * (sHi - sLo);
+    }
+
+    // 分段映射（4 段，基于 cpmMin~cpmMax 划分）
+    // 段边界：25%, 50%, 75% 处
+    const double span = hi - lo;
+    const double b1 = lo + span * 0.25;
+    const double b2 = lo + span * 0.50;
+    const double b3 = lo + span * 0.75;
+
+    // 对应倍率区间：[sLo, s1], [s1, s2], [s2, s3], [s3, sHi]
+    const double s1 = sLo + (sHi - sLo) * 0.4;
+    const double s2 = sLo + (sHi - sLo) * 0.65;
+    const double s3 = sLo + (sHi - sLo) * 0.85;
+
+    if (cpm <= b1) {
+        if (qFuzzyCompare(b1, lo)) return sLo;
+        const double t = (cpm - lo) / (b1 - lo);
+        return sLo + t * (s1 - sLo);
+    } else if (cpm <= b2) {
+        const double t = (cpm - b1) / (b2 - b1);
+        return s1 + t * (s2 - s1);
+    } else if (cpm <= b3) {
+        const double t = (cpm - b2) / (b3 - b2);
+        return s2 + t * (s3 - s2);
+    } else {
+        const double t = (cpm - b3) / (hi - b3);
+        return s3 + t * (sHi - s3);
+    }
+}
+
+// ============================================================================
+// M7 实时处理（08 号文档 §4.3）
+// ============================================================================
+
+void AppSettings::onKeySpeedUpdated(double cpm)
+{
+    // 更新原始 CPM
+    gifCurrentCpm_ = cpm;
+
+    // 空闲判定
+    const bool nowIdle = (cpm < static_cast<double>(gifCpmMin_));
+    gifIsIdle_ = nowIdle;
+
+    // GIF 全局关闭时直接输出 0
+    if (!gifEnabled_ || !animationsEnabled_) {
+        gifCurrentSpeed_ = 0.0;
+        emit gifStateChanged();
+        return;
+    }
+
+    double rawSpeed;
+    if (nowIdle) {
+        // 空闲行为：以最低倍率持续播放（不敲键盘时动图不完全静止，
+        // 而是保持 speedMin 慢速运转，保证"活"的感觉）
+        rawSpeed = gifSpeedMin_;
+    } else {
+        rawSpeed = mapCpmToSpeed(cpm);
+    }
+
+    // EMA 平滑（08 号文档 §4.3）
+    // 进入空闲时直接赋值（立即落到最低倍率），打字中变化才平滑；
+    // 从空闲恢复时由 minSpeed 经 EMA 平滑加速，视觉过渡自然
+    const double alpha = gifSmoothFactor_;
+    if (nowIdle || gifCurrentSpeed_ == 0.0) {
+        gifCurrentSpeed_ = rawSpeed;
+    } else {
+        gifCurrentSpeed_ = alpha * rawSpeed + (1.0 - alpha) * gifCurrentSpeed_;
+    }
+
+    emit gifStateChanged();
 }

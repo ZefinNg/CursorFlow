@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Window 2.15
+import CursorFlow.GifPlayer 1.0
 
 import "../components"
 
@@ -255,12 +256,6 @@ Item {
                     }
 
                     // 最小化时显示悬浮窗（M6 8.2，PRD 3.9）：关闭按钮与开关共用此设置
-                    Rectangle {
-                        width: parent.width
-                        height: 1
-                        color: theme.border
-                    }
-
                     Item {
                         width: parent.width
                         height: 52
@@ -304,6 +299,221 @@ Item {
                             model: [qsTr("每次询问"), qsTr("最小化到托盘"), qsTr("退出程序")]
                             currentIndex: settings.closeAction
                             onActivated: settings.closeAction = currentIndex
+                        }
+                    }
+                }
+            }
+
+            // ---- M7 GIF 动效（04 号文档 §2.3，PRD 3.10.4）----
+            Label {
+                text: qsTr("动效")
+                color: theme.textDim
+                font.pixelSize: 12
+                font.letterSpacing: 1
+            }
+            Rectangle {
+                width: parent.width
+                height: gifCol.implicitHeight + 24
+                radius: 12
+                color: theme.surface
+                border.color: theme.border
+
+                Column {
+                    id: gifCol
+                    anchors.fill: parent
+                    anchors.margins: 16
+                    spacing: 14
+
+                    Item {
+                        width: parent.width
+                        height: Math.max(gifSwitchLabel.implicitHeight, gifSwitch.implicitHeight)
+
+                        Label {
+                            id: gifSwitchLabel
+                            anchors.left: parent.left
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: qsTr("GIF 动效总开关")
+                            color: theme.text
+                            font.pixelSize: 13
+                        }
+                        Switch {
+                            id: gifSwitch
+                            anchors.right: parent.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            checked: settings.gifEnabled
+                            onToggled: settings.gifEnabled = checked
+                        }
+                    }
+
+                    Item {
+                        width: parent.width
+                        height: Math.max(mapModeLabel.implicitHeight, mapModeCombo.implicitHeight)
+
+                        Label {
+                            id: mapModeLabel
+                            anchors.left: parent.left
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: qsTr("速度映射模式")
+                            color: theme.text
+                            font.pixelSize: 13
+                        }
+                        ComboBox {
+                            id: mapModeCombo
+                            anchors.right: parent.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 140
+                            model: [qsTr("线性映射"), qsTr("分段映射")]
+                            currentIndex: settings.gifMapMode
+                            onActivated: settings.gifMapMode = currentIndex
+                        }
+                    }
+
+                    Item {
+                        width: parent.width
+                        height: Math.max(speedMaxLabel.implicitHeight, speedMaxCol.implicitHeight)
+
+                        Label {
+                            id: speedMaxLabel
+                            anchors.left: parent.left
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: qsTr("速度上限倍率")
+                            color: theme.text
+                            font.pixelSize: 13
+                        }
+                        Column {
+                            id: speedMaxCol
+                            anchors.right: parent.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 180
+                            spacing: 2
+
+                            Label {
+                                text: qsTr("当前: %1x").arg(settings.gifSpeedMax.toFixed(1))
+                                color: theme.textDim
+                                font.pixelSize: 10
+                            }
+                            Slider {
+                                width: parent.width
+                                from: 0.5
+                                to: 4.0
+                                stepSize: 0.1
+                                value: settings.gifSpeedMax
+                                onMoved: settings.gifSpeedMax = value
+                            }
+                            Item {
+                                width: parent.width
+                                height: 14
+                                Label {
+                                    anchors.left: parent.left
+                                    text: "0.5x"
+                                    color: theme.textDim
+                                    font.pixelSize: 10
+                                }
+                                Label {
+                                    anchors.right: parent.right
+                                    text: "4.0x"
+                                    color: theme.textDim
+                                    font.pixelSize: 10
+                                }
+                            }
+                        }
+                    }
+
+                    Item {
+                        width: parent.width
+                        height: Math.max(cpmMinLabel.implicitHeight, cpmMinSpin.implicitHeight)
+
+                        Label {
+                            id: cpmMinLabel
+                            anchors.left: parent.left
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: qsTr("CPM 下限（空闲阈值）")
+                            color: theme.text
+                            font.pixelSize: 13
+                        }
+                        SpinBox {
+                            id: cpmMinSpin
+                            anchors.right: parent.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 100
+                            from: 1
+                            to: 100
+                            value: settings.gifCpmMin
+                            onValueModified: settings.gifCpmMin = value
+                            editable: true
+                        }
+                    }
+
+                    // 实时预览区（120×80 内嵌 GIF + 速度数值）
+                    Row {
+                        width: parent.width
+                        spacing: 12
+                        visible: settings.gifEnabled && settings.animationsEnabled
+
+                        Rectangle {
+                            width: 120
+                            height: 80
+                            radius: 8
+                            color: theme.bg
+                            border.color: theme.border
+
+                            Loader {
+                                anchors.fill: parent
+                                active: true
+                                sourceComponent: Item {
+                                    GifPlayer {
+                                        id: previewGif
+                                        source: settings.gifSource
+                                        speed: settings.gifCurrentSpeed
+                                        playing: true
+                                    }
+                                    Image {
+                                        id: previewImage
+                                        anchors.centerIn: parent
+                                        property int frameTick: 0
+                                        source: previewGif.imageUrl + "?f=" + frameTick
+                                        cache: false
+                                        asynchronous: false
+                                        fillMode: Image.PreserveAspectFit
+                                        width: parent.width * 0.7
+                                        height: width
+
+                                        Connections {
+                                            target: previewGif
+                                            function onFrameChanged() { previewImage.frameTick += 1 }
+                                            function onSourceChanged() { previewImage.frameTick += 1 }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        Column {
+                            spacing: 4
+                            Label {
+                                text: qsTr("当前速度: %1x").arg(settings.gifCurrentSpeed.toFixed(2))
+                                color: theme.text
+                                font.pixelSize: 12
+                            }
+                            Label {
+                                text: qsTr("当前 CPM: %1").arg(settings.gifCurrentCpm.toFixed(0))
+                                color: theme.textDim
+                                font.pixelSize: 11
+                            }
+                            Label {
+                                text: settings.gifIsIdle
+                                        ? qsTr("状态: 空闲（暂停）")
+                                        : qsTr("状态: 活跃")
+                                color: settings.gifIsIdle ? "#F0B429" : "#7CB87C"
+                                font.pixelSize: 11
+                            }
+                            Label {
+                                text: qsTr("开始打字即可预览效果 🐕")
+                                color: theme.textDim
+                                font.pixelSize: 10
+                                wrapMode: Text.WordWrap
+                                width: parent.width
+                            }
                         }
                     }
                 }

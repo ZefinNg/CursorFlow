@@ -58,6 +58,10 @@ add_library(cursorflow_core STATIC
     src/app/FunFactsController.cpp
     src/app/AchievementController.h
     src/app/AchievementController.cpp
+    src/app/GifPlayer.h
+    src/app/GifPlayer.cpp
+    src/app/GifImageProvider.h
+    src/app/GifImageProvider.cpp
     src/export/Exporter.h
     src/export/Exporter.cpp
     src/export/ExporterController.h
@@ -99,7 +103,7 @@ string(TIMESTAMP CURSORFLOW_BUILD_DATE "%Y-%m-%d")
 set(CURSORFLOW_BUILD_COMPILER "${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 configure_file(src/app/version.h.in version.h @ONLY)
 target_include_directories(cursorflow_core PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
-target_link_libraries(cursorflow_core PUBLIC Qt5::Sql Qt5::Widgets)
+target_link_libraries(cursorflow_core PUBLIC Qt5::Sql Qt5::Widgets Qt5::Quick)
 
 # ---- 主程序 ----
 add_executable(CursorFlow WIN32 MACOSX_BUNDLE

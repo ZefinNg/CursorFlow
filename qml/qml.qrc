@@ -24,6 +24,7 @@
         <file>components/AchievementDialog.qml</file>
         <file>pages/AchievementsPage.qml</file>
         <file>icons/achievements.svg</file>
+        <file alias="dog.gif">../assets/image/dog.gif</file>
         <file>FloatingOverlay.qml</file>
     </qresource>
 </RCC>

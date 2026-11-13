@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QTimer>
 
+#include <array>
 #include <atomic>
 
 #include "capture/IPlatformHook.h"
@@ -45,8 +46,15 @@ public slots:
 signals:
     void deltaReady(InputDelta delta);
 
+    // M7：实时按键速度（CPM，每分钟击键数），250ms 推送一次。
+    // 独立于 deltaReady 通道，驱动 GIF 动效（02 号文档 §7）。
+    void keySpeedUpdated(double cpm);
+
 private slots:
     void onFlushTimer();
+
+    // M7：250ms 周期推送 CPM（02 号文档 §7.4）。
+    void onKeySpeedTimer();
 
 private:
     void handleKeyDown(const HookEvent& event);
@@ -77,4 +85,15 @@ private:
     // 定时器在 start() 内于采集线程懒创建（worker 在主线程构造后 moveToThread，
     // 若成员 QTimer 无 parent 会停留在主线程亲和性，跨线程 start 触发告警且不生效）
     QTimer* flushTimer_ = nullptr;
+
+    // M7：按键速度实时采样（02 号文档 §7）
+    // 滑动窗口：最近 3 秒内最多 200 个按键时间戳（循环缓冲区，仅采集线程访问）
+    static constexpr int kSpeedWindowMaxKeys = 200;
+    static constexpr int kSpeedWindowMs = 3 * 1000;     // 3s 窗口：保证起步响应
+    static constexpr int kSpeedStopMs = 1000;           // 停手判定：>1s 无按键即 cpm 归零
+    static constexpr double kSpeedCpmPerKey = 60000.0 / kSpeedWindowMs;  // count → CPM
+    std::array<qint64, kSpeedWindowMaxKeys> keyTimeBuf_{};
+    int keyTimeBufWriteIdx_ = 0;
+    QTimer* keySpeedTimer_ = nullptr;                    // 250ms，采集线程内创建
+    std::atomic<qint64> lastKeyDownMs_{0};               // 速度通道专用（鼠标活动不参与）
 };

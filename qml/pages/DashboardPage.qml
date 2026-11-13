@@ -1,9 +1,11 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 
+import CursorFlow.GifPlayer 1.0
+
 import "../components"
 
-// 今日概览（04 号文档 §2.1）：三张 StatCard + 粒子动态区（4.3）
+// 今日概览（04 号文档 §2.1）：StatCard + 打字动效卡片 + 粒子动态区（4.3）
 // + 小时热力图（4.2）+ 采集失败横幅（§6）。
 Item {
     id: root
@@ -125,6 +127,9 @@ Item {
         Row {
             id: cardsRow
 
+            // 动效卡片是否显示（GIF 总开关 + 全局动效联动）
+            property bool gifOn: settings.gifEnabled && settings.animationsEnabled
+
             width: parent.width
             height: root.expanded ? 0 : 120
             clip: true
@@ -134,10 +139,11 @@ Item {
                 NumberAnimation { duration: 260; easing.type: Easing.InOutCubic }
             }
 
-            // 显式三实例（不用 Repeater）：value 绑定随 todayChanged 逐卡片动画，
-            // 避免数组 model 重建导致动画重置
+            // 显式实例（不用 Repeater）：value 绑定随 todayChanged 逐卡片动画，
+            // 避免数组 model 重建导致动画重置；
+            // 动效卡片开启时四等分，关闭时三等分
             StatCard {
-                width: (cardsRow.width - 32) / 3
+                width: cardsRow.gifOn ? (cardsRow.width - 48) / 4 : (cardsRow.width - 32) / 3
                 height: 120
                 label: qsTr("鼠标距离")
                 mode: "distance"
@@ -145,7 +151,7 @@ Item {
                 accent: theme.primary
             }
             StatCard {
-                width: (cardsRow.width - 32) / 3
+                width: cardsRow.gifOn ? (cardsRow.width - 48) / 4 : (cardsRow.width - 32) / 3
                 height: 120
                 label: qsTr("按键总数")
                 mode: "count"
@@ -153,12 +159,71 @@ Item {
                 accent: theme.secondary
             }
             StatCard {
-                width: (cardsRow.width - 32) / 3
+                width: cardsRow.gifOn ? (cardsRow.width - 48) / 4 : (cardsRow.width - 32) / 3
                 height: 120
                 label: qsTr("活跃时长")
                 mode: "minutes"
                 value: stats.todayActiveMinutes
                 accent: theme.primary
+            }
+
+            // 打字动效卡片（M7，PRD 3.10.3）：GIF 随实时按键速度调速，
+            // 空闲时以最低倍率持续播放，不完全静止
+            Rectangle {
+                id: gifCard
+                visible: cardsRow.gifOn
+                width: (cardsRow.width - 48) / 4
+                height: 120
+                radius: 12
+                color: theme.surface
+                border.color: theme.border
+
+                GifPlayer {
+                    id: cardGif
+                    source: settings.gifSource
+                    speed: settings.gifCurrentSpeed
+                    playing: gifCard.visible
+                }
+
+                Image {
+                    id: cardGifImage
+                    anchors.centerIn: parent
+                    width: Math.min(parent.width, parent.height) * 0.6
+                    height: width
+                    // 帧序号拼进 URL：QML 认为 URL 变化才会重新向 provider 取帧
+                    property int frameTick: 0
+                    source: cardGif.imageUrl + "?f=" + frameTick
+                    cache: false
+                    asynchronous: false
+                    fillMode: Image.PreserveAspectFit
+
+                    Connections {
+                        target: cardGif
+                        function onFrameChanged() { cardGifImage.frameTick += 1 }
+                        function onSourceChanged() { cardGifImage.frameTick += 1 }
+                    }
+                }
+
+                // 与 StatCard 标签风格一致（accent 圆点 + 灰字）
+                Row {
+                    x: 16
+                    y: 14
+                    spacing: 8
+
+                    Rectangle {
+                        width: 8
+                        height: 8
+                        radius: 4
+                        color: theme.secondary
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                    Label {
+                        text: qsTr("打字动效")
+                        color: theme.textDim
+                        font.pixelSize: 13
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                }
             }
         }
 
@@ -196,8 +261,7 @@ Item {
             }
         }
 
-        // 实时动态区：粒子轨迹（04 号文档 §2.1）。动效关闭时不创建实例（§7）。
-        // 放大今日分布时动画收起（任务 6.5）。
+        // 实时动态区（04 号文档 §2.1）：粒子轨迹（GIF 已移至"打字动效"卡片）
         Rectangle {
             width: parent.width
             height: root.expanded ? 0 : 120
